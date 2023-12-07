@@ -39,13 +39,13 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public TaskDTO getTaskById(Authentication authentication, @PathVariable Integer id) {
-        return taskService.getTaskById(authentication.getName(), id);
+    public TaskDTO getTaskById(@PathVariable Integer id) {
+        return taskService.getTaskById(id);
     }
 
     @PatchMapping("/{id}/status")
-    public Status changeStatusOfTask(Authentication authentication, @PathVariable Integer id, Status newStatus) {
-        return taskService.changeStatusOfTask(authentication.getName(), id, newStatus);
+    public void changeStatusOfTask(Authentication authentication, @PathVariable Integer id, Status newStatus) {
+        taskService.changeStatusOfTask(authentication.getName(), id, newStatus);
     }
 
     @PatchMapping("/{id}/executors")

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,61 +26,81 @@ public class TaskServiceImpl implements TaskService {
     private final TaskRepository taskRepository;
     private final UsersRepository usersRepository;
 
-    private void checkTasksAuthor(String username, Integer id) {
+    private Task checkTasksAuthor(String username, Integer id) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("задача не найдена"));
         Users user = usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь с таким логином не найден"));
         if (!user.equals(task.getAuthor())) {
             throw new TaskDoesNotBelongToUserException("данная задача принадлежит другому пользователю");
         }
-
-
+        return task;
     }
 
     @Override
     public void createTask(String username, TaskDTO taskDTO) {
-        //добавить проверку, что задача принадлежит пользователю
         Task task = taskDTO.toTask();
-        task.setExecutors(new ArrayList<Users>());
-        task.setCommentList(new ArrayList<Comment>());
+        task.setAuthor(usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь с таким логином не найден")));
         taskRepository.save(task);
     }
 
     @Override
     public TaskDTO editTask(String username, TaskDTO taskDTO) {
-        //добавить проверку что id существует
-        //добавить проверку, что задача принадлежит пользователю
+        checkTasksAuthor(username, taskDTO.getId());
         return TaskDTO.fromTask(taskRepository.save(taskDTO.toTask()));
     }
 
     @Override
     public void deleteTask(String username, Integer idTask) {
-        //добавить проверку, что id существует
-        //добавить проверку, что задача принадлежит пользователю
+        checkTasksAuthor(username, idTask);
         taskRepository.deleteById(idTask);
     }
 
     @Override
     public List<TaskDTO> getAllTask(String username) {
-        return null;
+        Users users = usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь с таким логином не найден"));
+        return taskRepository.findAllByAuthor(users.getId())
+                .stream()
+                .map(TaskDTO :: fromTask)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public TaskDTO getTaskById(String username, Integer idTask) {
-        return null;
+    public TaskDTO getTaskById(Integer idTask) {
+        return TaskDTO.fromTask(taskRepository
+                .findById(idTask)
+                .orElseThrow(() -> new TaskNotFoundException("задача не найдена")));
     }
 
     @Override
-    public Status changeStatusOfTask(String username, Integer idTask, Status newStatus) {
-        return null;
+    public void changeStatusOfTask(String username, Integer idTask, Status newStatus) {
+        Task task = checkTasksAuthor(username, idTask);
+        task.setStatus(newStatus);
+        taskRepository.save(task);
     }
 
     @Override
     public List<UsersDTO> addExecutorsForTask(String username, Integer idTask, List<UsersDTO> usersDTOList) {
-        return null;
+        Task task = checkTasksAuthor(username, idTask);
+        List<Users> newExecutors = usersDTOList.stream().map(UsersDTO :: toUser).collect(Collectors.toList());
+        List<Users> executors = task.getExecutors();
+        if (executors.isEmpty()) {
+            task.setExecutors(newExecutors);
+        } else executors.addAll(newExecutors);
+        return executors.stream().map(UsersDTO :: fromUser).collect(Collectors.toList());
     }
 
     @Override
     public List<TaskDTO> getAllTaskToOtherAuthors(String username, String usernameForOtherUser) {
-        return null;
+        if (username.equals(usernameForOtherUser)) {
+            return getAllTask(username);
+        } else {
+
+            return taskRepository.findAllByAuthor(usersRepository
+                    .findByUsername(username)
+                    .orElseThrow(() ->
+                            new UserNotFoundException("пользователь с таким логином не найден")).getId())
+                    .stream()
+                    .map(TaskDTO :: fromTask)
+                    .collect(Collectors.toList());
+        }
     }
 }
