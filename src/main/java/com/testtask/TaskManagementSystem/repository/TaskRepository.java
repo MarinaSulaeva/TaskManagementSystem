@@ -13,4 +13,8 @@ public interface TaskRepository extends CrudRepository<Task, Integer> {
     @Query(value = "SELECT * FROM task " +
             "WHERE users_id = :userId", nativeQuery = true)
     List<Task> findAllByAuthor(Integer userId);
+
+    @Query(value = "SELECT * FROM task " +
+            "WHERE executor_id = :userId", nativeQuery = true)
+    List<Task> findAllByExecutor(Integer userId);
 }

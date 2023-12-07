@@ -18,7 +18,7 @@ public class TaskDTO {
     private Status status;
     private Priority priority;
     private Users author;
-    private List<Users> executors;
+    private Users executor;
 
 
     public Task toTask() {
@@ -27,7 +27,8 @@ public class TaskDTO {
                 this.description,
                 this.status,
                 this.priority,
-                this.author);
+                this.author,
+                this.executor);
     }
 
     public static TaskDTO fromTask(Task task) {
@@ -37,6 +38,6 @@ public class TaskDTO {
                 task.getStatus(),
                 task.getPriority(),
                 task.getAuthor(),
-                task.getExecutors());
+                task.getExecutor());
     }
 }

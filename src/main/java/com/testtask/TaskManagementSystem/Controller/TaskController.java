@@ -49,8 +49,13 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}/executors")
-    public List<UsersDTO> addExecutorsForTask(Authentication authentication, @PathVariable Integer id, List<UsersDTO> executorsList) {
-        return taskService.addExecutorsForTask(authentication.getName(), id, executorsList);
+    public UsersDTO addExecutorsForTask(Authentication authentication, @PathVariable Integer id, UsersDTO executor) {
+        return taskService.addExecutorForTask(authentication.getName(), id, executor);
+    }
+
+    @GetMapping("/{userId}")
+    public List<TaskDTO> getAllTaskForOtherUser(@PathVariable("userId") Integer id) {
+        return getAllTaskForOtherUser(id);
     }
 
 //    добавить объекты для валидации

@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: liquibase/changesets/create-table-image.yml
+  - include:
+      file: liquibase/changesets/create-table-task.yml
+  - include:
+      file: liquibase/changesets/create-table-comment.yml

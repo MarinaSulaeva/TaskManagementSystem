@@ -13,8 +13,9 @@ public interface TaskService {
     List<TaskDTO> getAllTask(String username);
     TaskDTO getTaskById(Integer idTask);
     void changeStatusOfTask(String username, Integer idTask, Status newStatus);
-    List<UsersDTO> addExecutorsForTask(String username, Integer idTask, List<UsersDTO> usersDTOList);
+    UsersDTO addExecutorForTask(String username, Integer idTask, UsersDTO executor);
     List<TaskDTO> getAllTaskToOtherAuthors(String username, String usernameForOtherUser);
+    List<TaskDTO> getAllTaskForExecutor(String username);
 
 
 

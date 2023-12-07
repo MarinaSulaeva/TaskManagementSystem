@@ -27,17 +27,19 @@ public class Task {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "users_id")
     private Users author;
-    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Users> executors;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "executor_id")
+    private Users executor;
     @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Comment> commentList;
 
-    public Task(Integer id, String title, String description, Status status, Priority priority, Users author) {
+    public Task(Integer id, String title, String description, Status status, Priority priority, Users author, Users executor) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.status = status;
         this.priority = priority;
         this.author = author;
+        this.executor = executor;
     }
 }

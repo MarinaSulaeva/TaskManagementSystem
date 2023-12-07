@@ -1,6 +1,7 @@
 package com.testtask.TaskManagementSystem.Controller;
 
 import com.testtask.TaskManagementSystem.DTO.CommentDTO;
+import com.testtask.TaskManagementSystem.DTO.TaskDTO;
 import com.testtask.TaskManagementSystem.service.CommentService;
 import com.testtask.TaskManagementSystem.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,10 @@ public class UserController {
     @GetMapping("/myComments")
     public List<CommentDTO> getAllMyComments(Authentication authentication) {
         return commentService.getAllCommentsForAuthor(authentication.getName());
+    }
+
+    @GetMapping("/my_task_for_execution")
+    public List<TaskDTO> getMyTasksForExecution(Authentication authentication) {
+        return taskService.getAllTaskForExecutor(authentication.getName());
     }
 }
