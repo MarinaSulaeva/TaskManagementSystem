@@ -50,8 +50,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void deleteTask(String username, Integer idTask) {
-        checkTasksAuthor(username, idTask);
-        taskRepository.deleteById(idTask);
+        taskRepository.delete(checkTasksAuthor(username, idTask));
     }
 
     @Override

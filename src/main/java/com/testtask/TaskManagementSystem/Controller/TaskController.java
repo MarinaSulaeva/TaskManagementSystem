@@ -52,4 +52,6 @@ public class TaskController {
     public List<UsersDTO> addExecutorsForTask(Authentication authentication, @PathVariable Integer id, List<UsersDTO> executorsList) {
         return taskService.addExecutorsForTask(authentication.getName(), id, executorsList);
     }
+
+//    добавить объекты для валидации
 }

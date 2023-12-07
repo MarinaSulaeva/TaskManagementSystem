@@ -6,12 +6,16 @@ import java.util.List;
 
 public interface CommentService {
     void createComment(String username, Integer idTask, String text);
-    CommentDTO changeComment(String username, Integer idTask, Integer idComment);
+    CommentDTO changeComment(String username, Integer idComment, String newText);
 
-    void deleteComment(String username, Integer idTask, Integer idComment);
+    void deleteComment(String username, Integer idComment);
 
-    CommentDTO getComment(String username, Integer idTask, Integer idComment);
+    CommentDTO getComment(Integer idComment);
 
-    List<CommentDTO> getAllCommentsForTask(String username, Integer idTask);
+    List<CommentDTO> getAllCommentsForTask(Integer idTask);
+
+    List<CommentDTO> getAllCommentsForAuthor(String username);
+
+
 
 }
