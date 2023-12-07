@@ -5,7 +5,7 @@ import com.testtask.TaskManagementSystem.DTO.CommentDTO;
 import java.util.List;
 
 public interface CommentService {
-    void createComment(String username, Integer idTask);
+    void createComment(String username, Integer idTask, String text);
     CommentDTO changeComment(String username, Integer idTask, Integer idComment);
 
     void deleteComment(String username, Integer idTask, Integer idComment);
