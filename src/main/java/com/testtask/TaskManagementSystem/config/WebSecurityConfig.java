@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -38,23 +39,46 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/*"))
                 .authorizeHttpRequests(this::customizeRequest)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //                .formLogin(Customizer.withDefaults())
 //                .logout(Customizer.withDefaults())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http.csrf(csrf -> csrf.ignoringRequestMatchers("/*"))
+//                .authorizeHttpRequests(this::customizeRequest)
+//                .formLogin(Customizer.withDefaults())
+//                .logout(Customizer.withDefaults())
+//                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+//        return http.build();
+//    }
+
     private void customizeRequest(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
         try {
-            registry.requestMatchers(new AntPathRequestMatcher("/task/**"))
-                    .hasAnyRole("USER")
-                    .requestMatchers(new AntPathRequestMatcher("user/**"))
-                    .hasAnyRole("USER")
-                    .requestMatchers(AUTH_WHITELIST).permitAll();
+            registry.requestMatchers(new AntPathRequestMatcher("/task/**")).authenticated()
+                    .requestMatchers(new AntPathRequestMatcher("/user/**")).authenticated()
+                    .anyRequest().permitAll();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
+//    private void customizeRequest(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry registry) {
+//        try {
+//            registry.requestMatchers(new AntPathRequestMatcher("/task/**"))
+//                    .hasAnyRole("USER")
+//                    .requestMatchers(new AntPathRequestMatcher("/user/**"))
+//                    .hasAnyRole("USER")
+//                    .anyRequest().permitAll()
+////                    .requestMatchers(AUTH_WHITELIST).permitAll()
+//            ;
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     @Bean
     public DaoAuthenticationProvider authProvider() {

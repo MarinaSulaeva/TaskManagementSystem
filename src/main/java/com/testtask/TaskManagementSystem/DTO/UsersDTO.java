@@ -9,16 +9,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsersDTO {
-    private Integer id;
-    private String username;
-    private String password;
-    private Role role;
+    private String email;
+
 
     public Users toUser() {
-        return new Users(this.id, this.username, this.password, this.role);
+        Users users = new Users();
+        users.setUsername(this.email);
+        return users;
     }
 
     public static UsersDTO fromUser(Users users) {
-        return new UsersDTO(users.getId(), users.getUsername(), users.getPassword(), users.getRole());
+        return new UsersDTO(users.getUsername());
     }
 }

@@ -22,7 +22,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public ResponseEntity<?> createToken(JwtRequest jwtRequest) {
+    public ResponseEntity<JwtResponse> createToken(JwtRequest jwtRequest) {
         UserDetails userDetails = userService.loadUserByUsername(jwtRequest.getUsername());
         if (!userService.userExists(jwtRequest.getUsername()) || encoder.matches(jwtRequest.getPassword(), userDetails.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

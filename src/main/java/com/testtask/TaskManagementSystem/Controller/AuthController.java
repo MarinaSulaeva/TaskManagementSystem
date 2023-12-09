@@ -1,6 +1,7 @@
 package com.testtask.TaskManagementSystem.Controller;
 
 import com.testtask.TaskManagementSystem.DTO.JwtRequest;
+import com.testtask.TaskManagementSystem.DTO.JwtResponse;
 import com.testtask.TaskManagementSystem.DTO.Register;
 import com.testtask.TaskManagementSystem.service.AuthService;
 import jakarta.validation.Valid;
@@ -26,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth")
-    public ResponseEntity<?> createToken(@RequestBody @Valid JwtRequest request) {
+    public ResponseEntity<JwtResponse> createToken(@RequestBody @Valid JwtRequest request) {
         return authService.createToken(request);
     }
 }

@@ -1,8 +1,6 @@
 package com.testtask.TaskManagementSystem.service.impl;
 
-import com.testtask.TaskManagementSystem.DTO.Status;
-import com.testtask.TaskManagementSystem.DTO.TaskDTO;
-import com.testtask.TaskManagementSystem.DTO.UsersDTO;
+import com.testtask.TaskManagementSystem.DTO.*;
 import com.testtask.TaskManagementSystem.entity.Comment;
 import com.testtask.TaskManagementSystem.entity.Task;
 import com.testtask.TaskManagementSystem.entity.Users;
@@ -43,16 +41,25 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void createTask(String username, TaskDTO taskDTO) {
-        Task task = taskDTO.toTask();
+    public void createTask(String username, TaskForCreate taskForCreate) {
+        Task task = new Task();
+        task.setTitle(taskForCreate.getTitle());
+        task.setPriority(taskForCreate.getPriority());
+        task.setDescription(taskForCreate.getDescription());
+        task.setStatus(Status.CREATED);
+        task.setExecutor(usersRepository.findByUsername(taskForCreate.getExecutorUsername()).orElseThrow(() -> new UserNotFoundException("пользователь с таким логином не найден")));
         task.setAuthor(usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь с таким логином не найден")));
         taskRepository.save(task);
     }
 
     @Override
-    public TaskDTO editTask(String username, TaskDTO taskDTO) {
-        checkTasksAuthor(username, taskDTO.getId(), false);
-        return TaskDTO.fromTask(taskRepository.save(taskDTO.toTask()));
+    public TaskDTO editTask(String username, TaskForChange taskForChange) {
+        Task task = checkTasksAuthor(username, taskForChange.getId(), false);
+        task.setDescription(taskForChange.getDescription());
+        task.setPriority(taskForChange.getPriority());
+        task.setTitle(taskForChange.getTitle());
+
+        return TaskDTO.fromTask(taskRepository.save(task));
     }
 
     @Override

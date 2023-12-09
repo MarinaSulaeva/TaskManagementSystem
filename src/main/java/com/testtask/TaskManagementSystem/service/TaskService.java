@@ -1,14 +1,12 @@
 package com.testtask.TaskManagementSystem.service;
 
-import com.testtask.TaskManagementSystem.DTO.Status;
-import com.testtask.TaskManagementSystem.DTO.TaskDTO;
-import com.testtask.TaskManagementSystem.DTO.UsersDTO;
+import com.testtask.TaskManagementSystem.DTO.*;
 
 import java.util.List;
 
 public interface TaskService {
-    void createTask(String username, TaskDTO taskDTO);
-    TaskDTO editTask(String username, TaskDTO taskDTO);
+    void createTask(String username, TaskForCreate taskForCreate);
+    TaskDTO editTask(String username, TaskForChange taskForChange);
     void deleteTask(String username, Integer idTask);
     List<TaskDTO> getAllTask(String username);
     TaskDTO getTaskById(Integer idTask);
