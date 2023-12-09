@@ -1,24 +1,27 @@
 package com.testtask.TaskManagementSystem.DTO;
 
-import com.testtask.TaskManagementSystem.entity.Comment;
+
 import com.testtask.TaskManagementSystem.entity.Task;
-import com.testtask.TaskManagementSystem.entity.Users;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskDTO {
+    @NotNull
     private Integer id;
+    @Size(min = 2, max = 32)
     private String title;
+    @Size(min = 2, max = 255)
     private String description;
     private Status status;
     private Priority priority;
-    private Users author;
-    private Users executor;
+    private UsersDTO author;
+    private UsersDTO executor;
 
 
     public Task toTask() {
@@ -27,8 +30,8 @@ public class TaskDTO {
                 this.description,
                 this.status,
                 this.priority,
-                this.author,
-                this.executor);
+                this.author.toUser(),
+                this.executor.toUser());
     }
 
     public static TaskDTO fromTask(Task task) {
@@ -37,7 +40,7 @@ public class TaskDTO {
                 task.getDescription(),
                 task.getStatus(),
                 task.getPriority(),
-                task.getAuthor(),
-                task.getExecutor());
+                UsersDTO.fromUser(task.getAuthor()),
+                UsersDTO.fromUser(task.getExecutor()));
     }
 }

@@ -48,15 +48,18 @@ public class TaskController {
         taskService.changeStatusOfTask(authentication.getName(), id, newStatus);
     }
 
-    @PatchMapping("/{id}/executors")
-    public UsersDTO addExecutorsForTask(Authentication authentication, @PathVariable Integer id, UsersDTO executor) {
-        return taskService.addExecutorForTask(authentication.getName(), id, executor);
+    @PatchMapping("/{id}/executor")
+    public UsersDTO addExecutorForTask(Authentication authentication, @PathVariable Integer id, String usernameExecutor) {
+        return taskService.addExecutorForTask(authentication.getName(), id, usernameExecutor);
     }
 
     @GetMapping("/{userId}")
-    public List<TaskDTO> getAllTaskForOtherUser(@PathVariable("userId") Integer id) {
-        return getAllTaskForOtherUser(id);
+    public List<TaskDTO> getAllTaskForOtherUser(@PathVariable("userId") String userameAuthor) {
+        return taskService.getAllTaskToOtherAuthors(userameAuthor);
     }
 
-//    добавить объекты для валидации
+    @GetMapping("/all")
+    public List<TaskDTO> getAllTask() {
+        return taskService.getAllTask();
+    }
 }

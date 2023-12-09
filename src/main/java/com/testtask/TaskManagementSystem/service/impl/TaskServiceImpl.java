@@ -84,26 +84,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public UsersDTO addExecutorForTask(String username, Integer idTask, UsersDTO executor) {
+    public UsersDTO addExecutorForTask(String username, Integer idTask, String usernameExecutor) {
         Task task = checkTasksAuthor(username, idTask, false);
-        task.setExecutor(executor.toUser());
+        Users user = usersRepository.findByUsername(usernameExecutor).orElseThrow(() -> new UserNotFoundException("пользователь не найден"));
+        task.setExecutor(user);
         return UsersDTO.fromUser(taskRepository.save(task).getExecutor());
     }
 
     @Override
-    public List<TaskDTO> getAllTaskToOtherAuthors(String username, String usernameForOtherUser) {
-        if (username.equals(usernameForOtherUser)) {
-            return getAllTask(username);
-        } else {
-
-            return taskRepository.findAllByAuthor(usersRepository
-                    .findByUsername(username)
-                    .orElseThrow(() ->
-                            new UserNotFoundException("пользователь с таким логином не найден")).getId())
+    public List<TaskDTO> getAllTaskToOtherAuthors(String usernameAuthor) {
+        return taskRepository.findAllByAuthor(usersRepository.findByUsername(usernameAuthor).orElseThrow(() -> new UserNotFoundException("пользователь не найден")).getId())
                     .stream()
                     .map(TaskDTO :: fromTask)
                     .collect(Collectors.toList());
-        }
+
     }
 
     @Override
@@ -115,6 +109,11 @@ public class TaskServiceImpl implements TaskService {
                 .stream()
                 .map(TaskDTO :: fromTask)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TaskDTO> getAllTask() {
+        return taskRepository.findAll().stream().map(TaskDTO ::fromTask).collect(Collectors.toList());
     }
 
 

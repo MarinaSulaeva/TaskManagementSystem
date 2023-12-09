@@ -15,7 +15,7 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "users_id")
     private Users author;
     @ManyToOne(fetch = FetchType.EAGER)

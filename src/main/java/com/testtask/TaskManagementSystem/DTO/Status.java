@@ -6,6 +6,6 @@ public enum Status {
     PENDING,
     FINISHED;
 
-
-
+    Status() {
+    }
 }

@@ -1,6 +1,6 @@
 databaseChangeLog:
   - include:
-      file: liquibase/changesets/create-table-image.yml
+      file: liquibase/changesets/create-table-users.yml
   - include:
       file: liquibase/changesets/create-table-task.yml
   - include:

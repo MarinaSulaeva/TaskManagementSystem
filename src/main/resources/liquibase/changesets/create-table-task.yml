@@ -26,23 +26,23 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: status
-                  type: integer
+                  type: varchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: priority
-                  type: integer
+                  type: varchar(255)
                   constraints:
                     nullable: false
-              - column:
-                  name: users_id
-                  type: integer
-                  constraints:
-                    foreignKeyName: users_id
-                    references: users(id)
               - column:
                   name: author_id
                   type: integer
                   constraints:
-                    foreignKeyName: users_id
+                    foreignKeyName: author_id
+                    references: users(id)
+              - column:
+                  name: executor_id
+                  type: integer
+                  constraints:
+                    foreignKeyName: executor_id
                     references: users(id)
