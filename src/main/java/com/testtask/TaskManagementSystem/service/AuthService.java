@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
 
-    public ResponseEntity<JwtResponse> createToken(JwtRequest jwtRequest);
+    public ResponseEntity<?> createToken(JwtRequest jwtRequest);
 
     public boolean register(Register register);
 }

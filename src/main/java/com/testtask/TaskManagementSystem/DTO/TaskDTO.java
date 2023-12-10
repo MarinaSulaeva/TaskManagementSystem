@@ -2,8 +2,6 @@ package com.testtask.TaskManagementSystem.DTO;
 
 
 import com.testtask.TaskManagementSystem.entity.Task;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,11 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskDTO {
-    @NotNull
     private Integer id;
-    @Size(min = 2, max = 32)
     private String title;
-    @Size(min = 2, max = 255)
     private String description;
     private Status status;
     private Priority priority;

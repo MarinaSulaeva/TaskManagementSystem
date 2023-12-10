@@ -1,11 +1,13 @@
 package com.testtask.TaskManagementSystem.DTO;
 
-import com.testtask.TaskManagementSystem.entity.Task;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+//import com.testtask.TaskManagementSystem.entity.Task;
+//import jakarta.validation.constraints.NotNull;
+//import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor

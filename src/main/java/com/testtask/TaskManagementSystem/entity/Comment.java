@@ -1,9 +1,10 @@
 package com.testtask.TaskManagementSystem.entity;
 
-import jakarta.persistence.*;
+//import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import javax.persistence.*;
 
 import java.time.LocalDateTime;
 @Entity
