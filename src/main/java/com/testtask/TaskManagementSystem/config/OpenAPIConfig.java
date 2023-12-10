@@ -9,8 +9,7 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 
 @OpenAPIDefinition(
         info = @Info(
-                title = "Loyalty System Api",
-                description = "Loyalty System", version = "1.0.0",
+                title = "Task Management System",
                 contact = @Contact(
                         name = "Sulaeva Marina",
                         email = "sulaevamv@gmail.com"

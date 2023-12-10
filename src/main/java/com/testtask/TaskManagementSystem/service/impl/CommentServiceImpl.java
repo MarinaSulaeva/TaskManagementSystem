@@ -2,7 +2,6 @@ package com.testtask.TaskManagementSystem.service.impl;
 
 import com.testtask.TaskManagementSystem.DTO.CommentDTO;
 import com.testtask.TaskManagementSystem.entity.Comment;
-import com.testtask.TaskManagementSystem.entity.Users;
 import com.testtask.TaskManagementSystem.exceptions.CommentNotFoundException;
 import com.testtask.TaskManagementSystem.exceptions.TaskNotFoundException;
 import com.testtask.TaskManagementSystem.exceptions.UserNotFoundException;
@@ -11,6 +10,7 @@ import com.testtask.TaskManagementSystem.repository.TaskRepository;
 import com.testtask.TaskManagementSystem.repository.UsersRepository;
 import com.testtask.TaskManagementSystem.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -61,14 +61,17 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentDTO> getAllCommentsForTask(Integer idTask) {
-        List<Comment> commentList = commentRepository.findAllByTask(idTask);
+    public List<CommentDTO> getAllCommentsForTask(Integer idTask, Integer page) {
+        List<Comment> commentList = commentRepository.findAllByTask(idTask, PageRequest.of(page,10)).stream().toList();
         return commentList.stream().map(CommentDTO :: fromComment).collect(Collectors.toList());
     }
 
     @Override
-    public List<CommentDTO> getAllCommentsForAuthor(String username) {
-        List<Comment> commentList = commentRepository.findAllByAuthor(usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь не найден")).getId());
+    public List<CommentDTO> getAllCommentsForAuthor(String username, Integer page) {
+        List<Comment> commentList = commentRepository.findAllByAuthor(
+                usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь не найден")).getId(),
+                PageRequest.of(page, 10))
+                .stream().toList();
         return commentList.stream().map(CommentDTO :: fromComment).collect(Collectors.toList());
 
     }

@@ -1,7 +1,6 @@
 package com.testtask.TaskManagementSystem.service.impl;
 
 import com.testtask.TaskManagementSystem.DTO.*;
-import com.testtask.TaskManagementSystem.entity.Comment;
 import com.testtask.TaskManagementSystem.entity.Task;
 import com.testtask.TaskManagementSystem.entity.Users;
 import com.testtask.TaskManagementSystem.exceptions.TaskDoesNotBelongToUserException;
@@ -11,11 +10,10 @@ import com.testtask.TaskManagementSystem.repository.TaskRepository;
 import com.testtask.TaskManagementSystem.repository.UsersRepository;
 import com.testtask.TaskManagementSystem.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,10 +40,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void createTask(String username, TaskForCreate taskForCreate) {
-        Task task = new Task();
-        task.setTitle(taskForCreate.getTitle());
-        task.setPriority(taskForCreate.getPriority());
-        task.setDescription(taskForCreate.getDescription());
+        Task task = taskForCreate.toTask();
         task.setStatus(Status.CREATED);
         task.setExecutor(usersRepository.findByUsername(taskForCreate.getExecutorUsername()).orElseThrow(() -> new UserNotFoundException("пользователь с таким логином не найден")));
         task.setAuthor(usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь с таким логином не найден")));
@@ -68,12 +63,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDTO> getAllTask(String username) {
-        Users users = usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь с таким логином не найден"));
-        return taskRepository.findAllByAuthor(users.getId())
-                .stream()
-                .map(TaskDTO :: fromTask)
-                .collect(Collectors.toList());
+    public List<TaskDTO> getAllMyTasks(String username, Integer page) {
+        return getAllTaskToOtherAuthors(username, page);
     }
 
     @Override
@@ -99,28 +90,30 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDTO> getAllTaskToOtherAuthors(String usernameAuthor) {
-        return taskRepository.findAllByAuthor(usersRepository.findByUsername(usernameAuthor).orElseThrow(() -> new UserNotFoundException("пользователь не найден")).getId())
-                    .stream()
-                    .map(TaskDTO :: fromTask)
-                    .collect(Collectors.toList());
+    public List<TaskDTO> getAllTaskToOtherAuthors(String usernameAuthor, Integer page) {
+        Users user = usersRepository.findByUsername(usernameAuthor).orElseThrow(() ->
+                new UserNotFoundException("пользователь с таким логином не найден"));
+        List <Task> taskList = taskRepository.findAllByAuthor(user.getId(), PageRequest.of(page, 10)).stream().toList();
+        return taskList.stream()
+                .map(TaskDTO :: fromTask)
+                .collect(Collectors.toList());
 
     }
 
     @Override
-    public List<TaskDTO> getAllTaskForExecutor(String username) {
-        return taskRepository.findAllByExecutor(usersRepository
-                        .findByUsername(username)
-                        .orElseThrow(() ->
-                                new UserNotFoundException("пользователь с таким логином не найден")).getId())
-                .stream()
+    public List<TaskDTO> getAllTaskForExecutor(String username, Integer page) {
+        Users user = usersRepository.findByUsername(username).orElseThrow(() ->
+                        new UserNotFoundException("пользователь с таким логином не найден"));
+        List <Task> taskList = taskRepository.findAllByExecutor(user.getId(), PageRequest.of(page, 10)).stream().toList();
+        return taskList.stream()
                 .map(TaskDTO :: fromTask)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<TaskDTO> getAllTask() {
-        return taskRepository.findAll().stream().map(TaskDTO ::fromTask).collect(Collectors.toList());
+    public List<TaskDTO> getAllTask(Integer page) {
+        List <Task> taskList = taskRepository.findAll(PageRequest.of(page, 10)).stream().toList();
+        return taskList.stream().map(TaskDTO ::fromTask).collect(Collectors.toList());
     }
 
 

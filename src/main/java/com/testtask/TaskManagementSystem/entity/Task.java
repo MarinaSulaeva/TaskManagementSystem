@@ -2,7 +2,6 @@ package com.testtask.TaskManagementSystem.entity;
 
 import com.testtask.TaskManagementSystem.DTO.Priority;
 import com.testtask.TaskManagementSystem.DTO.Status;
-//import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -12,9 +12,9 @@ public interface CommentService {
 
     CommentDTO getComment(Integer idComment);
 
-    List<CommentDTO> getAllCommentsForTask(Integer idTask);
+    List<CommentDTO> getAllCommentsForTask(Integer idTask, Integer page);
 
-    List<CommentDTO> getAllCommentsForAuthor(String username);
+    List<CommentDTO> getAllCommentsForAuthor(String username, Integer page);
 
 
 

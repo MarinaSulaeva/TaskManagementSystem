@@ -18,10 +18,6 @@ public class CommentDTO {
     private LocalDateTime createdAt;
     private String text;
 
-    public Comment toComment() {
-        return new Comment(this.id, this.author, this.task, this.createdAt, this.text);
-    }
-
     public static CommentDTO fromComment(Comment comment) {
         return new CommentDTO(comment.getId(), comment.getAuthor(), comment.getTask(), comment.getCreatedAt(), comment.getText());
     }

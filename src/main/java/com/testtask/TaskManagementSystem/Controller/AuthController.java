@@ -1,10 +1,8 @@
 package com.testtask.TaskManagementSystem.Controller;
 
 import com.testtask.TaskManagementSystem.DTO.JwtRequest;
-import com.testtask.TaskManagementSystem.DTO.JwtResponse;
 import com.testtask.TaskManagementSystem.DTO.Register;
 import com.testtask.TaskManagementSystem.service.AuthService;
-//import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -2,10 +2,7 @@ package com.testtask.TaskManagementSystem.Controller;
 
 import com.testtask.TaskManagementSystem.DTO.*;
 import com.testtask.TaskManagementSystem.service.TaskService;
-//import jakarta.validation.Valid;
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -38,10 +35,10 @@ public class TaskController {
         taskService.deleteTask(authentication.getName(), id);
     }
 
-    @GetMapping
+    @GetMapping("page")
     @SecurityRequirement(name = "JWT")
-    public List<TaskDTO> getAllTask(Authentication authentication) {
-        return taskService.getAllTask(authentication.getName());
+    public List<TaskDTO> getAllMyTasks(Authentication authentication, @RequestParam("page") Integer page) {
+        return taskService.getAllMyTasks(authentication.getName(), page);
     }
 
 
@@ -63,15 +60,15 @@ public class TaskController {
         return taskService.addExecutorForTask(authentication.getName(), id, usernameExecutor);
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/page")
     @SecurityRequirement(name = "JWT")
-    public List<TaskDTO> getAllTaskForOtherUser(@PathVariable("userId") String userameAuthor) {
-        return taskService.getAllTaskToOtherAuthors(userameAuthor);
+    public List<TaskDTO> getAllTaskForOtherUser(@PathVariable("userId") String userameAuthor, @RequestParam("page") Integer page) {
+        return taskService.getAllTaskToOtherAuthors(userameAuthor, page);
     }
 
-    @GetMapping("/all")
+    @GetMapping("/all/page")
     @SecurityRequirement(name = "JWT")
-    public List<TaskDTO> getAllTask() {
-        return taskService.getAllTask();
+    public List<TaskDTO> getAllTask(@RequestParam("page") Integer page) {
+        return taskService.getAllTask(page);
     }
 }
