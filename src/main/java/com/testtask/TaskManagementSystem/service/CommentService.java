@@ -1,12 +1,13 @@
 package com.testtask.TaskManagementSystem.service;
 
 import com.testtask.TaskManagementSystem.DTO.CommentDTO;
+import com.testtask.TaskManagementSystem.DTO.CreateOrUpdateComment;
 
 import java.util.List;
 
 public interface CommentService {
-    void createComment(String username, Integer idTask, String text);
-    CommentDTO changeComment(String username, Integer idComment, String newText);
+    void createComment(String username, Integer idTask, CreateOrUpdateComment comment);
+    CommentDTO changeComment(String username, Integer idComment, CreateOrUpdateComment comment);
 
     void deleteComment(String username, Integer idComment);
 

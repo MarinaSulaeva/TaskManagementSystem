@@ -13,12 +13,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CommentDTO {
     private Integer id;
-    private Users author;
-    private Task task;
+    private String author;
+    private String taskName;
     private LocalDateTime createdAt;
     private String text;
 
     public static CommentDTO fromComment(Comment comment) {
-        return new CommentDTO(comment.getId(), comment.getAuthor(), comment.getTask(), comment.getCreatedAt(), comment.getText());
+        return new CommentDTO(comment.getId(), comment.getAuthor().getUsername(), comment.getTask().getTitle(), comment.getCreatedAt(), comment.getText());
     }
 }

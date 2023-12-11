@@ -1,6 +1,7 @@
 package com.testtask.TaskManagementSystem.Controller;
 
 import com.testtask.TaskManagementSystem.DTO.CommentDTO;
+import com.testtask.TaskManagementSystem.DTO.CreateOrUpdateComment;
 import com.testtask.TaskManagementSystem.service.CommentService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +19,14 @@ public class CommentController {
 
     @PostMapping("/{id}/comment/")
     @SecurityRequirement(name = "JWT")
-    public void createComment(@PathVariable("id") Integer idTask, Authentication authentication, String text) {
-        commentService.createComment(authentication.getName(), idTask, text);
+    public void createComment(@PathVariable("id") Integer idTask, Authentication authentication, CreateOrUpdateComment comment) {
+        commentService.createComment(authentication.getName(), idTask, comment);
     }
 
     @PatchMapping("{id}/comment/{commentId}")
     @SecurityRequirement(name = "JWT")
-    public CommentDTO changeComment(@PathVariable("id") Integer idTask, @PathVariable("commentId") Integer commentId, Authentication authentication, String newText) {
-        return commentService.changeComment(authentication.getName(),commentId, newText);
+    public CommentDTO changeComment(@PathVariable("id") Integer idTask, @PathVariable("commentId") Integer commentId, Authentication authentication, CreateOrUpdateComment comment) {
+        return commentService.changeComment(authentication.getName(),commentId, comment);
     }
 
     @DeleteMapping("/{id}/comment/{commentId}")
@@ -40,9 +41,9 @@ public class CommentController {
         return commentService.getComment(commentId);
     }
 
-    @GetMapping("/{id}/comment/page")
+    @GetMapping("/{id}/comment/{page}")
     @SecurityRequirement(name = "JWT")
-    public List<CommentDTO> getAllCommentsForTask(@PathVariable("id") Integer id, @RequestParam("page") Integer page) {
+    public List<CommentDTO> getAllCommentsForTask(@PathVariable("id") Integer id, @PathVariable("page") Integer page) {
         return commentService.getAllCommentsForTask(id, page);
     }
 

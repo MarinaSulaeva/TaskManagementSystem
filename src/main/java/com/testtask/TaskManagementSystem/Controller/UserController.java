@@ -7,10 +7,7 @@ import com.testtask.TaskManagementSystem.service.TaskService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -21,15 +18,15 @@ public class UserController {
     private final TaskService taskService;
     private final CommentService commentService;
 
-    @GetMapping("/myComments/page")
+    @GetMapping("/myComments/{page}")
     @SecurityRequirement(name = "JWT")
-    public List<CommentDTO> getAllMyComments(Authentication authentication, @RequestParam("page") Integer page) {
+    public List<CommentDTO> getAllMyComments(Authentication authentication, @PathVariable("page") Integer page) {
         return commentService.getAllCommentsForAuthor(authentication.getName(), page);
     }
 
-    @GetMapping("/my_task_for_execution/page")
+    @GetMapping("/my_task_for_execution/{page}")
     @SecurityRequirement(name = "JWT")
-    public List<TaskDTO> getMyTasksForExecution(Authentication authentication, @RequestParam("page") Integer page) {
+    public List<TaskDTO> getMyTasksForExecution(Authentication authentication, @PathVariable("page") Integer page) {
         return taskService.getAllTaskForExecutor(authentication.getName(), page);
     }
 }

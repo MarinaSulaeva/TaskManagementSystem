@@ -1,6 +1,7 @@
 package com.testtask.TaskManagementSystem.service.impl;
 
 import com.testtask.TaskManagementSystem.DTO.CommentDTO;
+import com.testtask.TaskManagementSystem.DTO.CreateOrUpdateComment;
 import com.testtask.TaskManagementSystem.entity.Comment;
 import com.testtask.TaskManagementSystem.exceptions.CommentNotFoundException;
 import com.testtask.TaskManagementSystem.exceptions.TaskNotFoundException;
@@ -33,20 +34,20 @@ public class CommentServiceImpl implements CommentService {
         return comment;
     }
     @Override
-    public void createComment(String username, Integer idTask, String text) {
+    public void createComment(String username, Integer idTask, CreateOrUpdateComment newComment) {
         Comment comment = new Comment();
         comment.setCreatedAt(LocalDateTime.now());
         comment.setAuthor(usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь с таким логином не найден")));
         comment.setTask(taskRepository.findById(idTask).orElseThrow(() -> new TaskNotFoundException("задача не найдена")));
-        comment.setText(text);
+        comment.setText(newComment.getText());
         commentRepository.save(comment);
     }
 
     @Override
-    public CommentDTO changeComment(String username, Integer idComment, String newText) {
+    public CommentDTO changeComment(String username, Integer idComment, CreateOrUpdateComment changeComment) {
         Comment comment = checkAuthor(username, idComment);
         comment.setCreatedAt(LocalDateTime.now());
-        comment.setText(newText);
+        comment.setText(changeComment.getText());
         return CommentDTO.fromComment(commentRepository.save(comment));
     }
 
