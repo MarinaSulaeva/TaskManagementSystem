@@ -2,6 +2,7 @@ package com.testtask.TaskManagementSystem.entity;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +27,10 @@ public class Comment {
     private LocalDateTime createdAt;
     private String text;
 
+    public Comment(Users author, Task task, LocalDateTime createdAt, String text) {
+        this.author = author;
+        this.task = task;
+        this.createdAt = createdAt;
+        this.text = text;
+    }
 }

@@ -2,10 +2,8 @@ package com.testtask.TaskManagementSystem.entity;
 
 import com.testtask.TaskManagementSystem.DTO.Role;
 //import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import javax.persistence.*;
 
 @Entity
@@ -13,7 +11,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +19,10 @@ public class Users {
     private String password;
     @Enumerated(EnumType.STRING)
     Role role;
+
+    public Users(String username, String password, Role role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
 }

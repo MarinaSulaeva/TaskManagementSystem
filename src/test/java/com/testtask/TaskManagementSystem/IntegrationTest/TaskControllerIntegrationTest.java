@@ -71,19 +71,17 @@ public class TaskControllerIntegrationTest {
     private Task addToDb(String usernameAuthor, String usernameExecutor) {
         taskRepository.deleteAll();
         usersRepository.deleteAll();
-        Users user = usersRepository.save(new Users(1,
-                usernameAuthor,
+        Users user = usersRepository.save(new Users(usernameAuthor,
                 "$2a$10$DIbqqLodN24iFcXG2YNqvOyz4LcBKhFPF9viA3RzDea09YBHCBlse",
                 Role.USER));
         if (!usernameAuthor.equals(usernameExecutor)) {
-            Users userExecutor = usersRepository.save(new Users(1,
-                    usernameExecutor,
+            Users userExecutor = usersRepository.save(new Users(usernameExecutor,
                     "$2a$10$DIbqqLodN24iFcXG2YNqvOyz4LcBKhFPF9viA3RzDea09YBHCBlse",
                     Role.USER));
-            Task task = new Task(1, "task", "task description", Status.CREATED, Priority.HIGH, user, userExecutor);
+            Task task = new Task("task", "task description", Status.CREATED, Priority.HIGH, user, userExecutor);
             return taskRepository.save(task);
         } else {
-            Task task = new Task(1, "task", "task description", Status.CREATED, Priority.HIGH, user, user);
+            Task task = new Task("task", "task description", Status.CREATED, Priority.HIGH, user, user);
             return taskRepository.save(task);
         }
     }
