@@ -40,9 +40,9 @@ public class CommentController {
         return commentService.getComment(commentId);
     }
 
-    @GetMapping("/{id}/comment/page")
+    @GetMapping("/{id}/comment/{page}")
     @SecurityRequirement(name = "JWT")
-    public List<CommentDTO> getAllCommentsForTask(@PathVariable("id") Integer id, @RequestParam("page") Integer page) {
+    public List<CommentDTO> getAllCommentsForTask(@PathVariable("id") Integer id, @PathVariable("page") Integer page) {
         return commentService.getAllCommentsForTask(id, page);
     }
 

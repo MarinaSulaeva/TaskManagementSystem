@@ -35,9 +35,9 @@ public class TaskController {
         taskService.deleteTask(authentication.getName(), id);
     }
 
-    @GetMapping("page")
+    @GetMapping("/myTask/{page}")
     @SecurityRequirement(name = "JWT")
-    public List<TaskDTO> getAllMyTasks(Authentication authentication, @RequestParam("page") Integer page) {
+    public List<TaskDTO> getAllMyTasks(Authentication authentication, @PathVariable("page") Integer page) {
         return taskService.getAllMyTasks(authentication.getName(), page);
     }
 
@@ -60,15 +60,15 @@ public class TaskController {
         return taskService.addExecutorForTask(authentication.getName(), id, usernameExecutor);
     }
 
-    @GetMapping("/{userId}/page")
+    @GetMapping("/username/{page}")
     @SecurityRequirement(name = "JWT")
-    public List<TaskDTO> getAllTaskForOtherUser(@PathVariable("userId") String userameAuthor, @RequestParam("page") Integer page) {
+    public List<TaskDTO> getAllTaskForOtherUser(@RequestParam("username") String userameAuthor, @PathVariable("page") Integer page) {
         return taskService.getAllTaskToOtherAuthors(userameAuthor, page);
     }
 
-    @GetMapping("/all/page")
+    @GetMapping("/all/{page}")
     @SecurityRequirement(name = "JWT")
-    public List<TaskDTO> getAllTask(@RequestParam("page") Integer page) {
+    public List<TaskDTO> getAllTask(@PathVariable("page") Integer page) {
         return taskService.getAllTask(page);
     }
 }

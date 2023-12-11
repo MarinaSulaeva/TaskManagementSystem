@@ -4,6 +4,7 @@ import com.testtask.TaskManagementSystem.DTO.Role;
 //import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
