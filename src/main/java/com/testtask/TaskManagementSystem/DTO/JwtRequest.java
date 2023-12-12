@@ -5,6 +5,9 @@ import lombok.Data;
 
 import javax.validation.constraints.Size;
 
+/**
+ * Класс для прохождения аутентификации по токену
+ */
 @Data
 public class JwtRequest {
     @Size(message = "введите от 4 до 32 символов", min = 4, max = 32)

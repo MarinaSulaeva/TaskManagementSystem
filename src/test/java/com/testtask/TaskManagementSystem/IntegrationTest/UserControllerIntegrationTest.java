@@ -1,40 +1,7 @@
 package com.testtask.TaskManagementSystem.IntegrationTest;
 
-import com.testtask.TaskManagementSystem.DTO.*;
-import com.testtask.TaskManagementSystem.config.JwtTokenUtil;
-import com.testtask.TaskManagementSystem.entity.Comment;
-import com.testtask.TaskManagementSystem.entity.Task;
-import com.testtask.TaskManagementSystem.entity.Users;
-import com.testtask.TaskManagementSystem.repository.CommentRepository;
-import com.testtask.TaskManagementSystem.repository.TaskRepository;
-import com.testtask.TaskManagementSystem.repository.UsersRepository;
-import com.testtask.TaskManagementSystem.service.impl.UserServiceImpl;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import net.minidev.json.JSONObject;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.time.LocalDateTime;
-import java.util.List;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 //@SpringBootTest
 //@AutoConfigureMockMvc

@@ -1,7 +1,7 @@
 package com.testtask.TaskManagementSystem.security;
 
 import com.testtask.TaskManagementSystem.DTO.Role;
-import com.testtask.TaskManagementSystem.entity.Users;
+import com.testtask.TaskManagementSystem.entity.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,6 +13,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Класс для проверки аутентификации и авторизации, импрементирует интерфейс UserDetails
+ */
 @Data
 @NoArgsConstructor
 public class UsersDetails implements UserDetails {
@@ -21,7 +24,7 @@ public class UsersDetails implements UserDetails {
     private String password;
     private Role role;
 
-    public UsersDetails(Users user) {
+    public UsersDetails(User user) {
         this.id = user.getId();
         this.username = user.getUsername();
         this.password = user.getPassword();

@@ -12,6 +12,9 @@ import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Класс для создания и работы с токеном
+ */
 @Component
 public class JwtTokenUtil {
 
@@ -21,6 +24,9 @@ public class JwtTokenUtil {
     @Value("${jwt.lifetime}")
     private Duration jwtLifetime;
 
+    /**
+     * Метод генерации токена
+     */
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         List<String> rolesList = userDetails.getAuthorities().stream()
@@ -39,14 +45,23 @@ public class JwtTokenUtil {
                 .compact();
     }
 
+    /**
+     * Метод получения логина из токена
+     */
     public String getUsername(String token) {
         return getAllClaimsFromToken(token).getSubject();
     }
 
+    /**
+     * Метод получения ролей из токена
+     */
     public List<String> getRoles(String token) {
         return getAllClaimsFromToken(token).get("roles", List.class);
     }
 
+    /**
+     * Метод преобразования токена в класс Claims для дальнейшего получения логина и ролей из токена
+     */
     private Claims getAllClaimsFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)

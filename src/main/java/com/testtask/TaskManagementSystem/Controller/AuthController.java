@@ -12,11 +12,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+/**
+ * Класс-контроллер для регистрации и получения токена
+ */
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthService authService;
 
+    /**
+     * Метод для регистрации
+     */
     @PostMapping("/register")
     public ResponseEntity<?> createNewUser(@RequestBody @Valid Register register) throws Exception {
         if (authService.register(register)) {
@@ -26,6 +32,9 @@ public class AuthController {
         }
     }
 
+    /**
+     * Методя для получения токена
+     */
     @PostMapping("/auth")
     public ResponseEntity<?> createToken(@RequestBody @Valid JwtRequest request) {
         return authService.createToken(request);

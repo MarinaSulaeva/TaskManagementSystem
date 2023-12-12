@@ -3,17 +3,18 @@ package com.testtask.TaskManagementSystem.entity;
 import com.testtask.TaskManagementSystem.DTO.Priority;
 import com.testtask.TaskManagementSystem.DTO.Status;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
+/**
+ * Класс-сущность задачи, сохраняемая в базе данных
+ */
 @Entity
 @Table(name = "task")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,12 +27,12 @@ public class Task {
     private Priority priority;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id")
-    private Users author;
+    private User author;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "executor_id")
-    private Users executor;
+    private User executor;
 
-    public Task(String title, String description, Status status, Priority priority, Users author, Users executor) {
+    public Task(String title, String description, Status status, Priority priority, User author, User executor) {
         this.title = title;
         this.description = description;
         this.status = status;

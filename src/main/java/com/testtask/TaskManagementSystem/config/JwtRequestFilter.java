@@ -18,6 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
+/**
+ * Класс-фильтр для получения токена
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j

@@ -4,6 +4,9 @@ package com.testtask.TaskManagementSystem.DTO;
 import lombok.Data;
 import javax.validation.constraints.Size;
 
+/**
+ * Класс для регистрации польщователя
+ */
 @Data
 public class Register {
     @Size(message = "введите от 4 до 32 символов", min = 4, max = 32)

@@ -1,7 +1,7 @@
 package com.testtask.TaskManagementSystem.IntegrationTest;
 
 import com.testtask.TaskManagementSystem.DTO.Role;
-import com.testtask.TaskManagementSystem.entity.Users;
+import com.testtask.TaskManagementSystem.entity.User;
 import com.testtask.TaskManagementSystem.repository.UsersRepository;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ public class AuthControllerTest {
 
     private void addToDb() {
         usersRepository.deleteAll();
-        Users user = new Users(1,
+        User user = new User(1,
                 "user@gmail.com",
                 "$2a$10$DIbqqLodN24iFcXG2YNqvOyz4LcBKhFPF9viA3RzDea09YBHCBlse",
                 Role.USER);

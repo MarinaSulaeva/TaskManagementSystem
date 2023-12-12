@@ -6,8 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.validation.constraints.Size;
-import javax.validation.constraints.NotNull;
 
+/**
+ * Класс для создания задачи
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,6 +23,9 @@ public class TaskForCreate {
     @Size(message = "введите от 4 до 32 символов", min = 4, max = 32)
     private String executorUsername;
 
+    /**
+     * Метод для преобразования в сущность
+     */
     public Task toTask() {
         Task task = new Task();
         task.setPriority(this.priority);

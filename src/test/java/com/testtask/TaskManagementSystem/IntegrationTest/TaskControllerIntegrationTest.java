@@ -3,36 +3,24 @@ package com.testtask.TaskManagementSystem.IntegrationTest;
 import com.testtask.TaskManagementSystem.DTO.*;
 import com.testtask.TaskManagementSystem.config.JwtTokenUtil;
 import com.testtask.TaskManagementSystem.entity.Task;
-import com.testtask.TaskManagementSystem.entity.Users;
+import com.testtask.TaskManagementSystem.entity.User;
 import com.testtask.TaskManagementSystem.repository.TaskRepository;
 import com.testtask.TaskManagementSystem.repository.UsersRepository;
-import com.testtask.TaskManagementSystem.service.TaskService;
 import com.testtask.TaskManagementSystem.service.impl.UserServiceImpl;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.util.Base64Utils;
-import org.springframework.web.bind.annotation.*;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import javax.validation.Valid;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -71,11 +59,11 @@ public class TaskControllerIntegrationTest {
     private Task addToDb(String usernameAuthor, String usernameExecutor) {
         taskRepository.deleteAll();
         usersRepository.deleteAll();
-        Users user = usersRepository.save(new Users(usernameAuthor,
+        User user = usersRepository.save(new User(usernameAuthor,
                 "$2a$10$DIbqqLodN24iFcXG2YNqvOyz4LcBKhFPF9viA3RzDea09YBHCBlse",
                 Role.USER));
         if (!usernameAuthor.equals(usernameExecutor)) {
-            Users userExecutor = usersRepository.save(new Users(usernameExecutor,
+            User userExecutor = usersRepository.save(new User(usernameExecutor,
                     "$2a$10$DIbqqLodN24iFcXG2YNqvOyz4LcBKhFPF9viA3RzDea09YBHCBlse",
                     Role.USER));
             Task task = new Task("task", "task description", Status.CREATED, Priority.HIGH, user, userExecutor);
@@ -219,7 +207,7 @@ public class TaskControllerIntegrationTest {
     @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
     public void getAllMyTask() throws Exception {
         Task task = addToDb("user@gmail.com", "user@gmail.com");
-        mockMvc.perform(get("/task/{page}", 0)
+        mockMvc.perform(get("/user/my_task/page").param("page", String.valueOf(0))
                         .header("Authorization", "Bearer " + getToken("user@gmail.com", "password")))
                 .andExpect(status().isOk());
     }
@@ -247,7 +235,7 @@ public class TaskControllerIntegrationTest {
     public void changeStatus_isOk() throws Exception {
         Task task = addToDb("user@gmail.com", "user@gmail.com");
         JSONObject status = new JSONObject();
-        status.put("newStatus", "STARTED");
+        status.put("status", "STARTED");
         mockMvc.perform(patch("/task/{id}/status",task.getId())
                         .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -284,19 +272,27 @@ public class TaskControllerIntegrationTest {
 
     @Test
     @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
-    public void getAllTaskForOther_isOk() throws Exception {
+    public void getAllTaskForOtherUser_isOk() throws Exception {
         addToDb("user@gmail.com", "user1@gmail.com");
-        mockMvc.perform(get("/task/username/{page}",0).param("username", "user1@gmail.com")
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password")))
+        JSONObject otherUser = new JSONObject();
+        otherUser.put("email", "user1@gmail.com");
+        mockMvc.perform(get("/task/username/page").param("page", String.valueOf(0))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(otherUser.toString()))
                 .andExpect(status().isOk());
     }
 
     @Test
     @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
-    public void getAllTaskForOther_isNotFound() throws Exception {
+    public void getAllTaskForOtherUser_isNotFound() throws Exception {
         addToDb("user@gmail.com", "user1@gmail.com");
-        mockMvc.perform(get("/task/username/{page}",0).param("username", "user2@gmail.com")
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password")))
+        JSONObject otherUser = new JSONObject();
+        otherUser.put("email", "user2@gmail.com");
+        mockMvc.perform(get("/task/username/page").param("page", String.valueOf(0))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(otherUser.toString()))
                 .andExpect(status().isNotFound());
     }
 
@@ -304,7 +300,7 @@ public class TaskControllerIntegrationTest {
     @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
     public void getAllTask_isOk() throws Exception {
         addToDb("user@gmail.com", "user@gmail.com");
-        mockMvc.perform(get("/all/{page}", 0)
+        mockMvc.perform(get("/all/page").param("page", String.valueOf(0))
                         .header("Authorization", "Bearer " + getToken("user@gmail.com", "password")))
                 .andExpect(status().isOk());
     }

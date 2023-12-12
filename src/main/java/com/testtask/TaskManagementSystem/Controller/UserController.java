@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Класс-контроллер для пользователя
+ */
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
@@ -18,15 +21,34 @@ public class UserController {
     private final TaskService taskService;
     private final CommentService commentService;
 
-    @GetMapping("/myComments/{page}")
+    /**
+     * Метод для получения комментарий пользователя
+     */
+    @GetMapping("/my_сomments/page")
     @SecurityRequirement(name = "JWT")
-    public List<CommentDTO> getAllMyComments(Authentication authentication, @PathVariable("page") Integer page) {
+    public List<CommentDTO> getAllMyComments(Authentication authentication,
+                                             @RequestParam("page") Integer page) {
         return commentService.getAllCommentsForAuthor(authentication.getName(), page);
     }
 
-    @GetMapping("/my_task_for_execution/{page}")
+    /**
+     * Метод для получения задач для исполнения
+     */
+    @GetMapping("/my_task_for_execution/page")
     @SecurityRequirement(name = "JWT")
-    public List<TaskDTO> getMyTasksForExecution(Authentication authentication, @PathVariable("page") Integer page) {
+    public List<TaskDTO> getMyTasksForExecution(Authentication authentication,
+                                                @RequestParam("page") Integer page) {
         return taskService.getAllTaskForExecutor(authentication.getName(), page);
     }
+
+    /**
+     * Метод для получения задач пользователя
+     */
+    @GetMapping("/my_task/page")
+    @SecurityRequirement(name = "JWT")
+    public List<TaskDTO> getAllMyTasks(Authentication authentication,
+                                       @RequestParam("page") Integer page) {
+        return taskService.getAllMyTasks(authentication.getName(), page);
+    }
+
 }

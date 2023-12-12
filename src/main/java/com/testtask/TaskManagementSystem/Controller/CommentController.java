@@ -9,7 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+/**
+ * Класс-контроллер для работы с комментариями
+ */
 @RestController
 @RequestMapping("/task")
 @RequiredArgsConstructor
@@ -17,33 +19,57 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/{id}/comment/")
+    /**
+     * метод для создания комментария
+     */
+    @PostMapping("/{id}/comment")
     @SecurityRequirement(name = "JWT")
-    public void createComment(@PathVariable("id") Integer idTask, Authentication authentication, CreateOrUpdateComment comment) {
-        commentService.createComment(authentication.getName(), idTask, comment);
+    public Integer createComment(Authentication authentication,
+                              @PathVariable("id") Integer idTask,
+                              CreateOrUpdateComment comment) {
+        return commentService.createComment(authentication.getName(), idTask, comment);
     }
 
+    /**
+     * Метод для изменения комментария
+     */
     @PatchMapping("{id}/comment/{commentId}")
     @SecurityRequirement(name = "JWT")
-    public CommentDTO changeComment(@PathVariable("id") Integer idTask, @PathVariable("commentId") Integer commentId, Authentication authentication, CreateOrUpdateComment comment) {
+    public CommentDTO changeComment(Authentication authentication,
+                                    @PathVariable("id") Integer idTask,
+                                    @PathVariable("commentId") Integer commentId,
+                                    CreateOrUpdateComment comment) {
         return commentService.changeComment(authentication.getName(),commentId, comment);
     }
 
+    /**
+     * Метод для удаления комментария
+     */
     @DeleteMapping("/{id}/comment/{commentId}")
     @SecurityRequirement(name = "JWT")
-    public void deleteComment(@PathVariable("id") Integer idTask, @PathVariable("commentId") Integer commentId, Authentication authentication) {
+    public void deleteComment(Authentication authentication,
+                              @PathVariable("id") Integer idTask,
+                              @PathVariable("commentId") Integer commentId) {
         commentService.deleteComment(authentication.getName(), commentId);
     }
 
+    /**
+     * Метод получения комментария
+     */
     @GetMapping("/{id}/comment/{commentId}")
     @SecurityRequirement(name = "JWT")
-    public CommentDTO getComment(@PathVariable("id") Integer idTask, @PathVariable("commentId") Integer commentId) {
+    public CommentDTO getComment(@PathVariable("id") Integer idTask,
+                                 @PathVariable("commentId") Integer commentId) {
         return commentService.getComment(commentId);
     }
 
-    @GetMapping("/{id}/comment/{page}")
+    /**
+     * Метод получения всех комментарий для задачи
+     */
+    @GetMapping("/{id}/comment/page")
     @SecurityRequirement(name = "JWT")
-    public List<CommentDTO> getAllCommentsForTask(@PathVariable("id") Integer id, @PathVariable("page") Integer page) {
+    public List<CommentDTO> getAllCommentsForTask(@PathVariable("id") Integer id,
+                                                  @RequestParam("page") Integer page) {
         return commentService.getAllCommentsForTask(id, page);
     }
 

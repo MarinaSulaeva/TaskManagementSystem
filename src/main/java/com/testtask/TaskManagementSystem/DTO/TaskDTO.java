@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Класс получения задачи
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,17 +21,9 @@ public class TaskDTO {
     private UsersDTO author;
     private UsersDTO executor;
 
-
-    public Task toTask() {
-        return new Task(this.id,
-                this.title,
-                this.description,
-                this.status,
-                this.priority,
-                this.author.toUser(),
-                this.executor.toUser());
-    }
-
+    /**
+     * Метод для преобразования сущности
+     */
     public static TaskDTO fromTask(Task task) {
         return new TaskDTO(task.getId(),
                 task.getTitle(),

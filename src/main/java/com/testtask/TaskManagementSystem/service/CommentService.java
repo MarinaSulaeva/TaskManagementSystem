@@ -5,8 +5,12 @@ import com.testtask.TaskManagementSystem.DTO.CreateOrUpdateComment;
 
 import java.util.List;
 
+/**
+ * Интерфейс для работы с комментариями
+ */
 public interface CommentService {
-    void createComment(String username, Integer idTask, CreateOrUpdateComment comment);
+    Integer createComment(String username, Integer idTask, CreateOrUpdateComment comment);
+
     CommentDTO changeComment(String username, Integer idComment, CreateOrUpdateComment comment);
 
     void deleteComment(String username, Integer idComment);
@@ -16,7 +20,6 @@ public interface CommentService {
     List<CommentDTO> getAllCommentsForTask(Integer idTask, Integer page);
 
     List<CommentDTO> getAllCommentsForAuthor(String username, Integer page);
-
 
 
 }

@@ -1,12 +1,14 @@
 package com.testtask.TaskManagementSystem.DTO;
 
-import com.testtask.TaskManagementSystem.entity.Task;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import javax.validation.constraints.Size;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Класс изменения задачи
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
