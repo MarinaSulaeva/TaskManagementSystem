@@ -2,43 +2,42 @@ package com.testtask.TaskManagementSystem.entity;
 
 import com.testtask.TaskManagementSystem.DTO.Priority;
 import com.testtask.TaskManagementSystem.DTO.Status;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import javax.persistence.*;
 
-import java.util.List;
+/**
+ * Класс-сущность задачи, сохраняемая в базе данных
+ */
 @Entity
 @Table(name = "task")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
     private String description;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Status status;
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Priority priority;
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "users_id")
-    private Users author;
-    @ManyToMany(mappedBy = "users", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Users> executors;
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Comment> commentList;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "author_id")
+    private User author;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "executor_id")
+    private User executor;
 
-    public Task(Integer id, String title, String description, Status status, Priority priority, Users author) {
-        this.id = id;
+    public Task(String title, String description, Status status, Priority priority, User author, User executor) {
         this.title = title;
         this.description = description;
         this.status = status;
         this.priority = priority;
         this.author = author;
+        this.executor = executor;
     }
 }

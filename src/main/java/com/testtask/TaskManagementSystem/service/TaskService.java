@@ -1,21 +1,32 @@
 package com.testtask.TaskManagementSystem.service;
 
-import com.testtask.TaskManagementSystem.DTO.Status;
-import com.testtask.TaskManagementSystem.DTO.TaskDTO;
-import com.testtask.TaskManagementSystem.DTO.UsersDTO;
+import com.testtask.TaskManagementSystem.DTO.*;
 
 import java.util.List;
 
+/**
+ * Интерфейс для работы с задачами
+ */
 public interface TaskService {
-    void createTask(String username, TaskDTO taskDTO);
-    TaskDTO editTask(String username, TaskDTO taskDTO);
-    void deleteTask(String username, Integer idTask);
-    List<TaskDTO> getAllTask(String username);
-    TaskDTO getTaskById(String username, Integer idTask);
-    Status changeStatusOfTask(String username, Integer idTask, Status newStatus);
-    List<UsersDTO> addExecutorsForTask(String username, Integer idTask, List<UsersDTO> usersDTOList);
-    List<TaskDTO> getAllTaskToOtherAuthors(String username, String usernameForOtherUser);
+    Integer createTask(String username, TaskForCreate taskForCreate);
 
+    TaskDTO editTask(String username, TaskForChange taskForChange);
+
+    void deleteTask(String username, Integer idTask);
+
+    List<TaskDTO> getAllMyTasks(String username, Integer page);
+
+    TaskDTO getTaskById(Integer idTask);
+
+    void changeStatusOfTask(String username, Integer idTask, Status newStatus);
+
+    UsersDTO addExecutorForTask(String username, Integer idTask, String usernameExecutor);
+
+    List<TaskDTO> getAllTaskToOtherAuthors(String usernameAuthor, Integer page);
+
+    List<TaskDTO> getAllTaskForExecutor(String username, Integer page);
+
+    List<TaskDTO> getAllTask(Integer page);
 
 
 }

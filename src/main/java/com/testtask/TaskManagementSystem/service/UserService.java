@@ -1,10 +1,13 @@
 package com.testtask.TaskManagementSystem.service;
 
-import com.testtask.TaskManagementSystem.DTO.TaskDTO;
+import com.testtask.TaskManagementSystem.DTO.Register;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
-import java.util.List;
+/**
+ * Интерфейс для работы с пользователем
+ */
+public interface UserService extends UserDetailsService {
+    void createUser(Register register, String password);
 
-public interface UserService {
-    List<TaskDTO> getAllTaskToOtherAuthors(Integer id, Integer idOtherUser);
-    List<TaskDTO> getAllTaskAsExecutor(Integer id);
+    boolean userExists(String username);
 }
