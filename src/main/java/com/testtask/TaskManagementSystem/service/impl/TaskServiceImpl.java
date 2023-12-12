@@ -111,7 +111,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public UsersDTO addExecutorForTask(String username, Integer idTask, String usernameExecutor) {
         Task task = checkTasksAuthor(username, idTask, false);
-        User user = usersRepository.findByUsername(usernameExecutor).orElseThrow(() -> new UserNotFoundException("пользователь не найден"));
+        User user = usersRepository.findByUsername(usernameExecutor).orElseThrow(() ->
+                new UserNotFoundException("пользователь не найден"));
         task.setExecutor(user);
         Task resultTask = taskRepository.save(task);
         return UsersDTO.fromUser(resultTask.getExecutor());

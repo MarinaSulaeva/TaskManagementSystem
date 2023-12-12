@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -24,9 +26,8 @@ public class UserServiceImpl implements UserService {
     }
 
     public boolean userExists(String username) {
-        User userNotExists = new User();
-        User user = usersRepository.findByUsername(username).orElse(userNotExists);
-        return !userNotExists.equals(user);
+        User user = usersRepository.findByUsername(username).orElse(null);
+        return !Objects.isNull(user);
     }
 
     public void createUser(Register register, String password) {

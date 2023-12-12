@@ -66,8 +66,8 @@ public class TaskController {
     @SecurityRequirement(name = "JWT")
     public void changeStatusOfTask(Authentication authentication,
                                    @PathVariable Integer id,
-                                   @RequestBody Status newStatus) {
-        taskService.changeStatusOfTask(authentication.getName(), id, newStatus);
+                                   @RequestBody ChangeStatus newStatus) {
+        taskService.changeStatusOfTask(authentication.getName(), id, newStatus.getStatus());
     }
 
     /**

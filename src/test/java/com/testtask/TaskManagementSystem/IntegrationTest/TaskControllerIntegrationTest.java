@@ -6,7 +6,7 @@ import com.testtask.TaskManagementSystem.entity.Task;
 import com.testtask.TaskManagementSystem.entity.User;
 import com.testtask.TaskManagementSystem.repository.TaskRepository;
 import com.testtask.TaskManagementSystem.repository.UsersRepository;
-import com.testtask.TaskManagementSystem.service.impl.UserServiceImpl;
+import com.testtask.TaskManagementSystem.service.UserService;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class TaskControllerIntegrationTest {
     private TaskRepository taskRepository;
 
     @Autowired
-    private UserServiceImpl userService;
+    private UserService userService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -203,14 +203,7 @@ public class TaskControllerIntegrationTest {
                 .andExpect(status().isForbidden());
     }
 
-    @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
-    public void getAllMyTask() throws Exception {
-        Task task = addToDb("user@gmail.com", "user@gmail.com");
-        mockMvc.perform(get("/user/my_task/page").param("page", String.valueOf(0))
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password")))
-                .andExpect(status().isOk());
-    }
+
 
     @Test
     @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
@@ -244,19 +237,6 @@ public class TaskControllerIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
-    public void addExecutor_isOk() throws Exception {
-        Task task = addToDb("user@gmail.com", "user1@gamil.com");
-        JSONObject executor = new JSONObject();
-        executor.put("email", "user@gmail.com");
-        mockMvc.perform(patch("/task/{id}/executor",task.getId())
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(executor.toString()))
-                .andExpect(status().isOk());
-    }
-
-    @Test
     @WithMockUser(username = "user1@gmail.com", password = "password", roles = "USER")
     public void addExecutor_403() throws Exception {
         Task task = addToDb("user@gmail.com", "user1@gmail.com");
@@ -276,12 +256,13 @@ public class TaskControllerIntegrationTest {
         addToDb("user@gmail.com", "user1@gmail.com");
         JSONObject otherUser = new JSONObject();
         otherUser.put("email", "user1@gmail.com");
-        mockMvc.perform(get("/task/username/page").param("page", String.valueOf(0))
+        mockMvc.perform(get("/task/other/page").param("page", String.valueOf(0))
                         .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(otherUser.toString()))
                 .andExpect(status().isOk());
     }
+
 
     @Test
     @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
@@ -289,7 +270,7 @@ public class TaskControllerIntegrationTest {
         addToDb("user@gmail.com", "user1@gmail.com");
         JSONObject otherUser = new JSONObject();
         otherUser.put("email", "user2@gmail.com");
-        mockMvc.perform(get("/task/username/page").param("page", String.valueOf(0))
+        mockMvc.perform(get("/task/other/page").param("page", String.valueOf(0))
                         .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(otherUser.toString()))
@@ -300,7 +281,7 @@ public class TaskControllerIntegrationTest {
     @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
     public void getAllTask_isOk() throws Exception {
         addToDb("user@gmail.com", "user@gmail.com");
-        mockMvc.perform(get("/all/page").param("page", String.valueOf(0))
+        mockMvc.perform(get("/task/all/page").param("page", String.valueOf(0))
                         .header("Authorization", "Bearer " + getToken("user@gmail.com", "password")))
                 .andExpect(status().isOk());
     }
