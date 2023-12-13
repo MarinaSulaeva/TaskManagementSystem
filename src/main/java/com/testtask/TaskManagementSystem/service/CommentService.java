@@ -11,11 +11,11 @@ import java.util.List;
 public interface CommentService {
     Integer createComment(String username, Integer idTask, CreateOrUpdateComment comment);
 
-    CommentDTO changeComment(String username, Integer idComment, CreateOrUpdateComment comment);
+    CommentDTO changeComment(String username, Integer idComment, CreateOrUpdateComment comment, Integer idTask);
 
-    void deleteComment(String username, Integer idComment);
+    void deleteComment(String username, Integer idComment, Integer idTask);
 
-    CommentDTO getComment(Integer idComment);
+    CommentDTO getComment(Integer idComment, Integer idTask);
 
     List<CommentDTO> getAllCommentsForTask(Integer idTask, Integer page);
 
