@@ -7,20 +7,26 @@ import com.testtask.TaskManagementSystem.entity.User;
 import com.testtask.TaskManagementSystem.repository.TaskRepository;
 import com.testtask.TaskManagementSystem.repository.UsersRepository;
 import com.testtask.TaskManagementSystem.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+
+import javax.validation.Valid;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -286,4 +292,17 @@ public class TaskControllerIntegrationTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    public void addExecutor_isOk() throws Exception {
+
+        Task task = addToDb("user@gmail.com", "user1@gmail.com");
+        JSONObject userDTO = new JSONObject();
+        userDTO.put("email", "user@gmail.com");
+        mockMvc.perform(patch("/task/{id}/executor", task.getId())
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userDTO.toString()))
+                .andExpect(status().isOk());
+    }
 }
