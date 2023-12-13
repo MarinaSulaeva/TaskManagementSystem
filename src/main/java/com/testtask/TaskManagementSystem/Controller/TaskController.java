@@ -77,7 +77,7 @@ public class TaskController {
     @SecurityRequirement(name = "JWT")
     public UsersDTO addExecutorForTask(Authentication authentication,
                                        @PathVariable Integer id,
-                                       @Valid UsersDTO usersDTO) {
+                                       @RequestBody @Valid UsersDTO usersDTO) {
         return taskService.addExecutorForTask(authentication.getName(), id, usersDTO.getEmail());
     }
 
