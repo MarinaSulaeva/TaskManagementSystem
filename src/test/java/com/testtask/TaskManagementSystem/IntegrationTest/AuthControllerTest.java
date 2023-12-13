@@ -74,6 +74,7 @@ public class AuthControllerTest {
                         .content(login.toString()))
                 .andExpect(status().isUnauthorized());
     }
+
     @Test
     public void getToken_status_isNotValid() throws Exception {
         addToDb();
@@ -85,6 +86,7 @@ public class AuthControllerTest {
                         .content(login.toString()))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
     public void register_status_is201() throws Exception {
         usersRepository.deleteAll();
@@ -97,6 +99,7 @@ public class AuthControllerTest {
                         .content(register.toString()))
                 .andExpect(status().isCreated());
     }
+
     @Test
     public void register_status_is400() throws Exception {
         addToDb();
@@ -109,6 +112,7 @@ public class AuthControllerTest {
                         .content(register.toString()))
                 .andExpect(status().isBadRequest());
     }
+
     @Test
     public void register_status_isNotValid() throws Exception {
         usersRepository.deleteAll();
@@ -121,7 +125,6 @@ public class AuthControllerTest {
                         .content(register.toString()))
                 .andExpect(status().isBadRequest());
     }
-
 
 
 }

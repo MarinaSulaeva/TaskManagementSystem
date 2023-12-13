@@ -80,27 +80,36 @@ public class UserControllerIntegrationTest {
     }
 
 
-    private String getToken(String username, String password) throws Exception {
+    private String getToken(String username) {
         UserDetails userDetails = userService.loadUserByUsername(username);
         return jwtTokenUtil.generateToken(userDetails);
     }
 
     @Test
-    @WithMockUser(username = "user1@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user1@gmail.com", roles = "USER")
     public void getMyTaskForExecution_status_isOk() throws Exception {
         addToDb();
         mockMvc.perform(get("/user/my_task_for_execution/page").param("page", String.valueOf(0))
-                        .header("Authorization", "Bearer " + getToken("user1@gmail.com", "password")))
+                        .header("Authorization", "Bearer " + getToken("user1@gmail.com")))
+                .andExpect(status().isOk());
+    }
+
+
+    @Test
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
+    public void getAllMyTask() throws Exception {
+        addToDb();
+        mockMvc.perform(get("/user/my_task/page").param("page", String.valueOf(0))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com")))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
-    public void getAllMyTask() throws Exception {
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
+    public void getAllMyComment_status_isOk() throws Exception {
         addToDb();
-        mockMvc.perform(get("/user/my_task/page").param("page", String.valueOf(0))
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password")))
+        mockMvc.perform(get("/user/my_сomments/page").param("page", String.valueOf(0))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com")))
                 .andExpect(status().isOk());
     }
-
 }

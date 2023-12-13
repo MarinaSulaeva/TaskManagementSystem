@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 /**
  * Класс-контроллер для работы с комментариями
  */
@@ -25,8 +26,8 @@ public class CommentController {
     @PostMapping("/{id}/comment")
     @SecurityRequirement(name = "JWT")
     public Integer createComment(Authentication authentication,
-                              @PathVariable("id") Integer idTask,
-                              CreateOrUpdateComment comment) {
+                                 @PathVariable("id") Integer idTask,
+                                 @RequestBody CreateOrUpdateComment comment) {
         return commentService.createComment(authentication.getName(), idTask, comment);
     }
 
@@ -38,8 +39,8 @@ public class CommentController {
     public CommentDTO changeComment(Authentication authentication,
                                     @PathVariable("id") Integer idTask,
                                     @PathVariable("commentId") Integer commentId,
-                                    CreateOrUpdateComment comment) {
-        return commentService.changeComment(authentication.getName(),commentId, comment);
+                                    @RequestBody CreateOrUpdateComment comment) {
+        return commentService.changeComment(authentication.getName(), commentId, comment, idTask);
     }
 
     /**
@@ -50,7 +51,7 @@ public class CommentController {
     public void deleteComment(Authentication authentication,
                               @PathVariable("id") Integer idTask,
                               @PathVariable("commentId") Integer commentId) {
-        commentService.deleteComment(authentication.getName(), commentId);
+        commentService.deleteComment(authentication.getName(), commentId, idTask);
     }
 
     /**
@@ -60,7 +61,7 @@ public class CommentController {
     @SecurityRequirement(name = "JWT")
     public CommentDTO getComment(@PathVariable("id") Integer idTask,
                                  @PathVariable("commentId") Integer commentId) {
-        return commentService.getComment(commentId);
+        return commentService.getComment(commentId, idTask);
     }
 
     /**
@@ -72,9 +73,6 @@ public class CommentController {
                                                   @RequestParam("page") Integer page) {
         return commentService.getAllCommentsForTask(id, page);
     }
-
-
-
 
 
 }

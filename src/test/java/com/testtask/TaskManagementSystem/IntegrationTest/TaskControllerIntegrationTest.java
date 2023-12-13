@@ -7,26 +7,20 @@ import com.testtask.TaskManagementSystem.entity.User;
 import com.testtask.TaskManagementSystem.repository.TaskRepository;
 import com.testtask.TaskManagementSystem.repository.UsersRepository;
 import com.testtask.TaskManagementSystem.service.UserService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import javax.validation.Valid;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -80,14 +74,14 @@ public class TaskControllerIntegrationTest {
         }
     }
 
-    private String getToken(String username, String password) throws Exception {
+    private String getToken(String username) {
         UserDetails userDetails = userService.loadUserByUsername(username);
         return jwtTokenUtil.generateToken(userDetails);
     }
 
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void createTask_status_isOk() throws Exception {
         addToDb("user@gmail.com", "user@gmail.com");
         JSONObject taskForCreate = new JSONObject();
@@ -96,14 +90,14 @@ public class TaskControllerIntegrationTest {
         taskForCreate.put("priority", "LOW");
         taskForCreate.put("executorName", "user@gmail.com");
         mockMvc.perform(post("/task")
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(taskForCreate.toString()))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void createTask_status_isNotValid() throws Exception {
         addToDb("user@gmail.com", "user@gmail.com");
         JSONObject taskForCreate = new JSONObject();
@@ -112,14 +106,14 @@ public class TaskControllerIntegrationTest {
         taskForCreate.put("priority", "LOW");
         taskForCreate.put("executorName", "user@gmail.com");
         mockMvc.perform(post("/task")
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(taskForCreate.toString()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void editTask_status_isOk() throws Exception {
         Task task = addToDb("user@gmail.com", "user@gmail.com");
         JSONObject taskForChange = new JSONObject();
@@ -128,14 +122,14 @@ public class TaskControllerIntegrationTest {
         taskForChange.put("description", "task description");
         taskForChange.put("priority", "MEDIUM");
         mockMvc.perform(put("/task")
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(taskForChange.toString()))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void editTask_status_403() throws Exception {
         Task task = addToDb("user1@gmail.com", "user@gmail.com");
         JSONObject taskForChange = new JSONObject();
@@ -144,30 +138,30 @@ public class TaskControllerIntegrationTest {
         taskForChange.put("description", "task description");
         taskForChange.put("priority", "MEDIUM");
         mockMvc.perform(put("/task")
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(taskForChange.toString()))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void editTask_status_NotFoundTask() throws Exception {
-        Task task = addToDb("user@gmail.com", "user@gmail.com");
+        addToDb("user@gmail.com", "user@gmail.com");
         JSONObject taskForChange = new JSONObject();
         taskForChange.put("id", 1);
         taskForChange.put("title", "task title");
         taskForChange.put("description", "task description");
         taskForChange.put("priority", "MEDIUM");
         mockMvc.perform(put("/task")
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(taskForChange.toString()))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void editTask_status_notValid() throws Exception {
         Task task = addToDb("user@gmail.com", "user@gmail.com");
         JSONObject taskForChange = new JSONObject();
@@ -176,80 +170,79 @@ public class TaskControllerIntegrationTest {
         taskForChange.put("description", "task description111111111111111111111111");
         taskForChange.put("priority", "MEDIUM");
         mockMvc.perform(put("/task")
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(taskForChange.toString()))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void deleteTask_status_isOk() throws Exception {
         Task task = addToDb("user@gmail.com", "user@gmail.com");
         mockMvc.perform(delete("/task/{id}", task.getId())
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password")))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com")))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void deleteTask_status_isNotFound_Task() throws Exception {
-        Task task = addToDb("user@gmail.com", "user@gmail.com");
+        addToDb("user@gmail.com", "user@gmail.com");
         mockMvc.perform(delete("/task/{id}", 1)
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password")))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com")))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @WithMockUser(username = "user1@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user1@gmail.com", roles = "USER")
     public void deleteTask_status_403() throws Exception {
         Task task = addToDb("user@gmail.com", "user1@gmail.com");
         mockMvc.perform(delete("/task/{id}", task.getId())
-                        .header("Authorization", "Bearer " + getToken("user1@gmail.com", "password")))
+                        .header("Authorization", "Bearer " + getToken("user1@gmail.com")))
                 .andExpect(status().isForbidden());
     }
 
 
-
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void getTaskById_isOk() throws Exception {
         Task task = addToDb("user@gmail.com", "user@gmail.com");
         mockMvc.perform(get("/task/{id}", task.getId())
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password")))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com")))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void getTaskById_isNotFound() throws Exception {
-        Task task = addToDb("user@gmail.com", "user@gmail.com");
+        addToDb("user@gmail.com", "user@gmail.com");
         mockMvc.perform(get("/task/{id}", 1)
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password")))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com")))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void changeStatus_isOk() throws Exception {
         Task task = addToDb("user@gmail.com", "user@gmail.com");
         JSONObject status = new JSONObject();
         status.put("status", "STARTED");
-        mockMvc.perform(patch("/task/{id}/status",task.getId())
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
+        mockMvc.perform(patch("/task/{id}/status", task.getId())
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(status.toString()))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser(username = "user1@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user1@gmail.com", roles = "USER")
     public void addExecutor_403() throws Exception {
         Task task = addToDb("user@gmail.com", "user1@gmail.com");
         JSONObject executor = new JSONObject();
         executor.put("email", "user@gmail.com");
-        mockMvc.perform(patch("/task/{id}/executor",task.getId())
-                        .header("Authorization", "Bearer " + getToken("user1@gmail.com", "password"))
+        mockMvc.perform(patch("/task/{id}/executor", task.getId())
+                        .header("Authorization", "Bearer " + getToken("user1@gmail.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(executor.toString()))
                 .andExpect(status().isForbidden());
@@ -257,13 +250,13 @@ public class TaskControllerIntegrationTest {
 
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void getAllTaskForOtherUser_isOk() throws Exception {
         addToDb("user@gmail.com", "user1@gmail.com");
         JSONObject otherUser = new JSONObject();
         otherUser.put("email", "user1@gmail.com");
         mockMvc.perform(get("/task/other/page").param("page", String.valueOf(0))
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(otherUser.toString()))
                 .andExpect(status().isOk());
@@ -271,36 +264,35 @@ public class TaskControllerIntegrationTest {
 
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void getAllTaskForOtherUser_isNotFound() throws Exception {
         addToDb("user@gmail.com", "user1@gmail.com");
         JSONObject otherUser = new JSONObject();
         otherUser.put("email", "user2@gmail.com");
         mockMvc.perform(get("/task/other/page").param("page", String.valueOf(0))
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(otherUser.toString()))
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void getAllTask_isOk() throws Exception {
         addToDb("user@gmail.com", "user@gmail.com");
         mockMvc.perform(get("/task/all/page").param("page", String.valueOf(0))
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password")))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com")))
                 .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser(username = "user@gmail.com", password = "password", roles = "USER")
+    @WithMockUser(username = "user@gmail.com", roles = "USER")
     public void addExecutor_isOk() throws Exception {
-
         Task task = addToDb("user@gmail.com", "user1@gmail.com");
         JSONObject userDTO = new JSONObject();
         userDTO.put("email", "user@gmail.com");
         mockMvc.perform(patch("/task/{id}/executor", task.getId())
-                        .header("Authorization", "Bearer " + getToken("user@gmail.com", "password"))
+                        .header("Authorization", "Bearer " + getToken("user@gmail.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userDTO.toString()))
                 .andExpect(status().isOk());
