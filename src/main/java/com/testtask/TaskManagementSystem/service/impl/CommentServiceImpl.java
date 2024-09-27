@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -44,30 +43,19 @@ public class CommentServiceImpl implements CommentService {
         return comment;
     }
 
-    /**
-     * Метод для проверки наличия задачи в базе данных с переданным id
-     */
-    private boolean checkTaskIsExist(Integer id) {
-        Task task = taskRepository.findById(id).orElse(null);
-        return !Objects.isNull(task);
-    }
 
     /**
      * Класс создания комментария
      */
     @Override
     public Integer createComment(String username, Integer idTask, CreateOrUpdateComment newComment) {
-        if (checkTaskIsExist(idTask)) {
-            Comment comment = new Comment();
-            comment.setCreatedAt(LocalDateTime.now());
-            comment.setAuthor(usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь с таким логином не найден")));
-            comment.setTask(taskRepository.findById(idTask).orElseThrow(() -> new TaskNotFoundException("задача не найдена")));
-            comment.setText(newComment.getText());
-            return commentRepository.save(comment).getId();
-        } else {
-            throw new TaskNotFoundException("задача не найдена");
-        }
-
+        Task task = taskRepository.findById(idTask).orElseThrow(() ->new TaskNotFoundException("задача не найдена"));
+        Comment comment = new Comment();
+        comment.setCreatedAt(LocalDateTime.now());
+        comment.setAuthor(usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь с таким логином не найден")));
+        comment.setTask(task);
+        comment.setText(newComment.getText());
+        return commentRepository.save(comment).getId();
     }
 
     /**
@@ -78,15 +66,11 @@ public class CommentServiceImpl implements CommentService {
                                     Integer idComment,
                                     CreateOrUpdateComment changeComment,
                                     Integer idTask) {
-        if (checkTaskIsExist(idTask)) {
-            Comment comment = checkAuthor(username, idComment);
-            comment.setCreatedAt(LocalDateTime.now());
-            comment.setText(changeComment.getText());
-            return CommentDTO.fromComment(commentRepository.save(comment));
-        } else {
-            throw new TaskNotFoundException("задача не найдена");
-        }
-
+        Task task = taskRepository.findById(idTask).orElseThrow(() ->new TaskNotFoundException("задача не найдена"));
+        Comment comment = checkAuthor(username, idComment);
+        comment.setCreatedAt(LocalDateTime.now());
+        comment.setText(changeComment.getText());
+        return CommentDTO.fromComment(commentRepository.save(comment));
     }
 
     /**
@@ -94,11 +78,8 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public void deleteComment(String username, Integer idComment, Integer idTask) {
-        if (checkTaskIsExist(idTask)) {
-            commentRepository.delete(checkAuthor(username, idComment));
-        } else {
-            throw new TaskNotFoundException("задача не найдена");
-        }
+        Task task = taskRepository.findById(idTask).orElseThrow(() ->new TaskNotFoundException("задача не найдена"));
+        commentRepository.delete(checkAuthor(username, idComment));
     }
 
     /**
@@ -106,11 +87,8 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public CommentDTO getComment(Integer idComment, Integer idTask) {
-        if (checkTaskIsExist(idTask)) {
-            return CommentDTO.fromComment(commentRepository.findById(idComment).orElseThrow(() -> new CommentNotFoundException("комментарий не найден")));
-        } else {
-            throw new TaskNotFoundException("задача не найдена");
-        }
+        Task task = taskRepository.findById(idTask).orElseThrow(() ->new TaskNotFoundException("задача не найдена"));
+        return CommentDTO.fromComment(commentRepository.findById(idComment).orElseThrow(() -> new CommentNotFoundException("комментарий не найден")));
     }
 
     /**
@@ -118,12 +96,9 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public List<CommentDTO> getAllCommentsForTask(Integer idTask, Integer page) {
-        if (checkTaskIsExist(idTask)) {
-            List<Comment> commentList = commentRepository.findAllByTask(idTask, PageRequest.of(page, 10)).stream().toList();
-            return commentList.stream().map(CommentDTO::fromComment).collect(Collectors.toList());
-        } else {
-            throw new TaskNotFoundException("задача не найдена");
-        }
+        Task task = taskRepository.findById(idTask).orElseThrow(() ->new TaskNotFoundException("задача не найдена"));
+        List<Comment> commentList = commentRepository.findByTask(task, PageRequest.of(page, 10)).stream().toList();
+        return commentList.stream().map(CommentDTO::fromComment).collect(Collectors.toList());
     }
 
     /**
@@ -131,8 +106,8 @@ public class CommentServiceImpl implements CommentService {
      */
     @Override
     public List<CommentDTO> getAllCommentsForAuthor(String username, Integer page) {
-        List<Comment> commentList = commentRepository.findAllByAuthor(
-                        usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь не найден")).getId(),
+        List<Comment> commentList = commentRepository.findByAuthor(
+                        usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь не найден")),
                         PageRequest.of(page, 10))
                 .stream().toList();
         return commentList.stream().map(CommentDTO::fromComment).collect(Collectors.toList());

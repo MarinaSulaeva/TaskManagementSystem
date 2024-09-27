@@ -123,7 +123,7 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDTO> getAllTaskToOtherAuthors(String usernameAuthor, Integer page) {
         User user = usersRepository.findByUsername(usernameAuthor).orElseThrow(() ->
                 new UserNotFoundException("пользователь с таким логином не найден"));
-        List<Task> taskList = taskRepository.findAllByAuthor(user.getId(), PageRequest.of(page, 10)).stream().toList();
+        List<Task> taskList = taskRepository.findByAuthor(user, PageRequest.of(page, 10)).stream().toList();
         if (!taskList.isEmpty()) {
             return taskList.stream()
                     .map(TaskDTO::fromTask)
@@ -140,7 +140,7 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDTO> getAllTaskForExecutor(String username, Integer page) {
         User user = usersRepository.findByUsername(username).orElseThrow(() ->
                 new UserNotFoundException("пользователь с таким логином не найден"));
-        List<Task> taskList = taskRepository.findAllByExecutor(user.getId(), PageRequest.of(page, 10)).stream().toList();
+        List<Task> taskList = taskRepository.findByExecutor(user, PageRequest.of(page, 10)).stream().toList();
         if (taskList.isEmpty()) {
             return new ArrayList<>();
         } else {
