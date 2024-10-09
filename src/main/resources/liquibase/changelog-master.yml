@@ -5,3 +5,5 @@ databaseChangeLog:
       file: liquibase/changesets/create-table-task.yml
   - include:
       file: liquibase/changesets/create-table-comment.yml
+  - include:
+      file: liquibase/changesets/create-table-refresh-token.yml

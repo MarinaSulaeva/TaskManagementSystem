@@ -2,14 +2,11 @@ package com.testtask.TaskManagementSystem.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
 /**
- * Класс для получения токена
+ * Класс для получения токена по рефреш-токену
  */
 @Data
 @AllArgsConstructor
-public class JwtResponse {
+public class JwtRefreshResponse {
     private String accessToken;
-    private String refreshToken;
-
 }

@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: Marina
+      changes:
+        - createTable:
+            tableName: refresh_token
+            remarks: Список токенов.
+            columns:
+              - column:
+                  name: id
+                  type: integer
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  remarks: Идентификатор записи в таблице.
+              - column:
+                  name: token
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                  remarks: Содержимое токена.
+              - column:
+                  name: is_revoked
+                  type: boolean
+                  defaultValueBoolean: false
+                  remarks: Признак прекращения действия токена.
+              - column:
+                  name: users_id
+                  type: integer
+                  constraints:
+                    foreignKeyName: users_id
+                    references: users(id)
+                    deleteCascade: true
+                  remarks: Id пользователя.

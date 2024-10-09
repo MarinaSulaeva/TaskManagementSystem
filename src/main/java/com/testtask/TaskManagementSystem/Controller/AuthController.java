@@ -1,8 +1,8 @@
 package com.testtask.TaskManagementSystem.Controller;
 
-import com.testtask.TaskManagementSystem.DTO.JwtRequest;
-import com.testtask.TaskManagementSystem.DTO.Register;
+import com.testtask.TaskManagementSystem.DTO.*;
 import com.testtask.TaskManagementSystem.service.AuthService;
+import com.testtask.TaskManagementSystem.swagger.AuthControllerInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +17,14 @@ import javax.validation.Valid;
  */
 @RestController
 @RequiredArgsConstructor
-public class AuthController {
+public class AuthController implements AuthControllerInterface {
     private final AuthService authService;
 
     /**
      * Метод для регистрации
      */
     @PostMapping("/register")
-    public ResponseEntity<?> createNewUser(@RequestBody @Valid Register register) throws Exception {
+    public ResponseEntity<?> createNewUser(@RequestBody @Valid Register register) {
         if (authService.register(register)) {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } else {
@@ -33,10 +33,18 @@ public class AuthController {
     }
 
     /**
-     * Методя для получения токена
+     * Метод для получения токенов
      */
     @PostMapping("/auth")
-    public ResponseEntity<?> createToken(@RequestBody @Valid JwtRequest request) {
-        return authService.createToken(request);
+    public ResponseEntity<JwtResponse> createToken(@RequestBody @Valid JwtRequest request) {
+        return ResponseEntity.ok(authService.createToken(request));
+    }
+
+    /**
+     * Метод для обновления токена доступа по рефреш-токену
+     */
+    @PostMapping("/auth/refresh_token")
+    public ResponseEntity<JwtRefreshResponse> getRefreshToken(@RequestBody JwtRefreshToken jwtRefreshToken) {
+        return ResponseEntity.ok(authService.refreshToken(jwtRefreshToken));
     }
 }

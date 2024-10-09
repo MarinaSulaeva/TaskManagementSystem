@@ -25,10 +25,10 @@ public class Task {
     private Status status;
     @Enumerated(EnumType.STRING)
     private Priority priority;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
     private User author;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "executor_id")
     private User executor;
 

@@ -40,9 +40,11 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: author_id
                     references: users(id)
+                    deleteCascade: true
               - column:
                   name: executor_id
                   type: integer
                   constraints:
                     foreignKeyName: executor_id
                     references: users(id)
+                    deleteCascade: true

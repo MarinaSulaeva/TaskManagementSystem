@@ -19,12 +19,14 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: users_id
                     references: users(id)
+                    deleteCascade: true
               - column:
                   name: task_id
                   type: integer
                   constraints:
                     foreignKeyName: task_id
                     references: task(id)
+                    deleteCascade: true
               - column:
                   name: created_at
                   type: timestamp

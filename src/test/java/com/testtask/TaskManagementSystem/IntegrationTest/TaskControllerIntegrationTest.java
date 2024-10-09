@@ -8,6 +8,7 @@ import com.testtask.TaskManagementSystem.repository.TaskRepository;
 import com.testtask.TaskManagementSystem.repository.UsersRepository;
 import com.testtask.TaskManagementSystem.service.UserService;
 import net.minidev.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -47,7 +48,7 @@ public class TaskControllerIntegrationTest {
     @Container
     private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest")
             .withUsername("postgres")
-            .withPassword("73aberiv");
+            .withPassword("postgres");
 
     @DynamicPropertySource
     static void postgresProperties(DynamicPropertyRegistry registry) {
@@ -56,9 +57,13 @@ public class TaskControllerIntegrationTest {
         registry.add("spring.datasource.password", postgres::getPassword);
     }
 
-    private Task addToDb(String usernameAuthor, String usernameExecutor) {
+    @BeforeEach
+    public void clearDb() {
         taskRepository.deleteAll();
         usersRepository.deleteAll();
+    }
+
+    private Task addToDb(String usernameAuthor, String usernameExecutor) {
         User user = usersRepository.save(new User(usernameAuthor,
                 "$2a$10$DIbqqLodN24iFcXG2YNqvOyz4LcBKhFPF9viA3RzDea09YBHCBlse",
                 Role.USER));
@@ -76,7 +81,7 @@ public class TaskControllerIntegrationTest {
 
     private String getToken(String username) {
         UserDetails userDetails = userService.loadUserByUsername(username);
-        return jwtTokenUtil.generateToken(userDetails);
+        return jwtTokenUtil.createAccessToken(userDetails);
     }
 
 
@@ -93,7 +98,7 @@ public class TaskControllerIntegrationTest {
                         .header("Authorization", "Bearer " + getToken("user@gmail.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(taskForCreate.toString()))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -182,7 +187,7 @@ public class TaskControllerIntegrationTest {
         Task task = addToDb("user@gmail.com", "user@gmail.com");
         mockMvc.perform(delete("/task/{id}", task.getId())
                         .header("Authorization", "Bearer " + getToken("user@gmail.com")))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test

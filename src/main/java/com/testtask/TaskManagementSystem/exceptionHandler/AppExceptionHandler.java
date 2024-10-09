@@ -1,6 +1,7 @@
 package com.testtask.TaskManagementSystem.exceptionHandler;
 
 import com.testtask.TaskManagementSystem.exceptions.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -10,29 +11,41 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * Класс для обработки исключений
  */
 @ControllerAdvice
+@Slf4j
 public class AppExceptionHandler {
     @ExceptionHandler(value = {CommentNotFoundException.class})
     public ResponseEntity<?> handleCommentNotFound(CommentNotFoundException commentNotFoundException) {
-        return new ResponseEntity<>("комментарий не найден", HttpStatus.NOT_FOUND);
+        log.error("comment doesn't found",commentNotFoundException);
+        return new ResponseEntity<>(commentNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = {CommentDoesNotBelongToUserException.class})
     public ResponseEntity<?> handleCommentDoesNotBelongToUser(CommentDoesNotBelongToUserException commentDoesNotBelongToUserException) {
-        return new ResponseEntity<>("комментарий не принадлежит пользователю", HttpStatus.FORBIDDEN);
+        log.error("comment doesn't belong to user", commentDoesNotBelongToUserException);
+        return new ResponseEntity<>(commentDoesNotBelongToUserException.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(value = {TaskNotFoundException.class})
     public ResponseEntity<?> handleTaskNotFound(TaskNotFoundException taskNotFoundException) {
-        return new ResponseEntity<>("задача не найдена", HttpStatus.NOT_FOUND);
+        log.error("task doesn't found", taskNotFoundException);
+        return new ResponseEntity<>(taskNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(value = {TaskDoesNotBelongToUserException.class})
+    @ExceptionHandler(value = {TaskDoesNotBelongToUserException.class})
     public ResponseEntity<?> handleTaskDoesNotBelongToUser(TaskDoesNotBelongToUserException taskDoesNotBelongToUserException) {
-        return new ResponseEntity<>("данная задача не принадлежит пользователю", HttpStatus.FORBIDDEN);
+        log.error("task doesn't belong to user", taskDoesNotBelongToUserException);
+        return new ResponseEntity<>(taskDoesNotBelongToUserException.getMessage(), HttpStatus.FORBIDDEN);
     }
 
-    @org.springframework.web.bind.annotation.ExceptionHandler(value = {UserNotFoundException.class})
+    @ExceptionHandler(value = {UserNotFoundException.class})
     public ResponseEntity<?> handleUserNotFound(UserNotFoundException userNotFoundException) {
-        return new ResponseEntity<>("пользователь не найден", HttpStatus.NOT_FOUND);
+        log.error("user doesn't found", userNotFoundException);
+        return new ResponseEntity<>(userNotFoundException.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = {JwtAuthenticationException.class})
+    public ResponseEntity<?> handleJwtAuthenticationException(JwtAuthenticationException jwtAuthenticationException) {
+        log.error(jwtAuthenticationException.getMessage(), jwtAuthenticationException);
+        return new ResponseEntity<>(jwtAuthenticationException.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 }

@@ -1,6 +1,7 @@
 package com.testtask.TaskManagementSystem.service;
 
 import com.testtask.TaskManagementSystem.DTO.*;
+import com.testtask.TaskManagementSystem.entity.Task;
 
 import java.util.List;
 
@@ -27,6 +28,8 @@ public interface TaskService {
     List<TaskDTO> getAllTaskForExecutor(String username, Integer page);
 
     List<TaskDTO> getAllTask(Integer page);
+
+    Task getTask(Integer task);
 
 
 }

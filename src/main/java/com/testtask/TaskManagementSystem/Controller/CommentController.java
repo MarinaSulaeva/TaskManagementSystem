@@ -3,8 +3,10 @@ package com.testtask.TaskManagementSystem.Controller;
 import com.testtask.TaskManagementSystem.DTO.CommentDTO;
 import com.testtask.TaskManagementSystem.DTO.CreateOrUpdateComment;
 import com.testtask.TaskManagementSystem.service.CommentService;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import com.testtask.TaskManagementSystem.swagger.CommentControllerInterface;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/task")
 @RequiredArgsConstructor
-public class CommentController {
+public class CommentController implements CommentControllerInterface {
 
     private final CommentService commentService;
 
@@ -24,54 +26,52 @@ public class CommentController {
      * метод для создания комментария
      */
     @PostMapping("/{id}/comment")
-    @SecurityRequirement(name = "JWT")
-    public Integer createComment(Authentication authentication,
-                                 @PathVariable("id") Integer idTask,
-                                 @RequestBody CreateOrUpdateComment comment) {
-        return commentService.createComment(authentication.getName(), idTask, comment);
+    public ResponseEntity<Integer> createComment(Authentication authentication,
+                                                @PathVariable("id") Integer idTask,
+                                                @RequestBody CreateOrUpdateComment comment) {
+        Integer id = commentService.createComment(authentication.getName(), idTask, comment);
+        return ResponseEntity.status(HttpStatus.CREATED).body(id);
     }
 
     /**
      * Метод для изменения комментария
      */
     @PatchMapping("{id}/comment/{commentId}")
-    @SecurityRequirement(name = "JWT")
-    public CommentDTO changeComment(Authentication authentication,
+    public ResponseEntity<CommentDTO> changeComment(Authentication authentication,
                                     @PathVariable("id") Integer idTask,
                                     @PathVariable("commentId") Integer commentId,
                                     @RequestBody CreateOrUpdateComment comment) {
-        return commentService.changeComment(authentication.getName(), commentId, comment, idTask);
+        CommentDTO commentDTO = commentService.changeComment(authentication.getName(), commentId, comment, idTask);
+        return ResponseEntity.ok(commentDTO);
     }
 
     /**
      * Метод для удаления комментария
      */
     @DeleteMapping("/{id}/comment/{commentId}")
-    @SecurityRequirement(name = "JWT")
-    public void deleteComment(Authentication authentication,
+    public ResponseEntity<?> deleteComment(Authentication authentication,
                               @PathVariable("id") Integer idTask,
                               @PathVariable("commentId") Integer commentId) {
         commentService.deleteComment(authentication.getName(), commentId, idTask);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     /**
      * Метод получения комментария
      */
     @GetMapping("/{id}/comment/{commentId}")
-    @SecurityRequirement(name = "JWT")
-    public CommentDTO getComment(@PathVariable("id") Integer idTask,
+    public ResponseEntity<CommentDTO> getComment(@PathVariable("id") Integer idTask,
                                  @PathVariable("commentId") Integer commentId) {
-        return commentService.getComment(commentId, idTask);
+        return ResponseEntity.ok(commentService.getComment(commentId, idTask));
     }
 
     /**
      * Метод получения всех комментарий для задачи
      */
     @GetMapping("/{id}/comment/page")
-    @SecurityRequirement(name = "JWT")
-    public List<CommentDTO> getAllCommentsForTask(@PathVariable("id") Integer id,
+    public ResponseEntity<List<CommentDTO>> getAllCommentsForTask(@PathVariable("id") Integer id,
                                                   @RequestParam("page") Integer page) {
-        return commentService.getAllCommentsForTask(id, page);
+        return ResponseEntity.ok(commentService.getAllCommentsForTask(id, page));
     }
 
 

@@ -8,9 +8,11 @@ import com.testtask.TaskManagementSystem.entity.Comment;
 import com.testtask.TaskManagementSystem.entity.Task;
 import com.testtask.TaskManagementSystem.entity.User;
 import com.testtask.TaskManagementSystem.repository.CommentRepository;
+import com.testtask.TaskManagementSystem.repository.RefreshTokenRepository;
 import com.testtask.TaskManagementSystem.repository.TaskRepository;
 import com.testtask.TaskManagementSystem.repository.UsersRepository;
 import com.testtask.TaskManagementSystem.service.UserService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -52,10 +54,13 @@ public class UserControllerIntegrationTest {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private RefreshTokenRepository refreshTokenRepository;
+
     @Container
     private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest")
             .withUsername("postgres")
-            .withPassword("73aberiv");
+            .withPassword("postgres");
 
     @DynamicPropertySource
     static void postgresProperties(DynamicPropertyRegistry registry) {
@@ -64,10 +69,15 @@ public class UserControllerIntegrationTest {
         registry.add("spring.datasource.password", postgres::getPassword);
     }
 
-    private void addToDb() {
+    @BeforeEach
+    public void crearDb() {
         commentRepository.deleteAll();
         taskRepository.deleteAll();
         usersRepository.deleteAll();
+        refreshTokenRepository.deleteAll();
+    }
+
+    private void addToDb() {
         User user = usersRepository.save(new User("user@gmail.com",
                 "$2a$10$DIbqqLodN24iFcXG2YNqvOyz4LcBKhFPF9viA3RzDea09YBHCBlse",
                 Role.USER));
@@ -82,7 +92,7 @@ public class UserControllerIntegrationTest {
 
     private String getToken(String username) {
         UserDetails userDetails = userService.loadUserByUsername(username);
-        return jwtTokenUtil.generateToken(userDetails);
+        return jwtTokenUtil.createAccessToken(userDetails);
     }
 
     @Test

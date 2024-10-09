@@ -4,9 +4,13 @@ import com.testtask.TaskManagementSystem.DTO.*;
 import com.testtask.TaskManagementSystem.entity.Task;
 import com.testtask.TaskManagementSystem.entity.User;
 import com.testtask.TaskManagementSystem.exceptions.*;
+import com.testtask.TaskManagementSystem.mapper.TaskCreateMapper;
+import com.testtask.TaskManagementSystem.mapper.TaskMapper;
+import com.testtask.TaskManagementSystem.mapper.UsersMapper;
 import com.testtask.TaskManagementSystem.repository.TaskRepository;
 import com.testtask.TaskManagementSystem.repository.UsersRepository;
 import com.testtask.TaskManagementSystem.service.TaskService;
+import com.testtask.TaskManagementSystem.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -24,13 +28,18 @@ public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final UsersRepository usersRepository;
+    private final UserService userService;
+    private final TaskMapper taskMapper;
+    private final TaskCreateMapper taskCreateMapper;
+    private final UsersMapper usersMapper;
+
 
     /**
      * Метод для проверки прав для изменения задачи
      */
     private Task checkTasksAuthor(String username, Integer id, boolean accessForExecutor) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("задача не найдена"));
-        User user = usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь с таким логином не найден"));
+        Task task = getTask(id);
+        User user = userService.findUserByUserName(username);
         if (!accessForExecutor) {
             if (!user.equals(task.getAuthor())) {
                 throw new TaskDoesNotBelongToUserException("данная задача принадлежит другому пользователю");
@@ -48,10 +57,11 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public Integer createTask(String username, TaskForCreate taskForCreate) {
-        Task task = taskForCreate.toTask();
+//        Task task = taskForCreate.toTask();
+        Task task = taskCreateMapper.toModel(taskForCreate);
         task.setStatus(Status.CREATED);
         task.setExecutor(usersRepository.findByUsername(taskForCreate.getExecutorUsername()).orElse(null));
-        task.setAuthor(usersRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException("пользователь с таким логином не найден")));
+        task.setAuthor(userService.findUserByUserName(username));
         return taskRepository.save(task).getId();
     }
 
@@ -64,7 +74,8 @@ public class TaskServiceImpl implements TaskService {
         task.setDescription(taskForChange.getDescription());
         task.setPriority(taskForChange.getPriority());
         task.setTitle(taskForChange.getTitle());
-        return TaskDTO.fromTask(taskRepository.save(task));
+//        return TaskDTO.fromTask(taskRepository.save(task));
+        return taskMapper.toDTO(taskRepository.save(task));
     }
 
     /**
@@ -88,12 +99,11 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public TaskDTO getTaskById(Integer idTask) {
-        return TaskDTO.fromTask(taskRepository
-                .findById(idTask)
-                .orElseThrow(() -> new TaskNotFoundException("задача не найдена")));
+//        return TaskDTO.fromTask(getTask(idTask));
+        return taskMapper.toDTO(getTask(idTask));
     }
 
-    /**
+    /**0
      * Метод для изменения статуса задачи
      */
     @Override
@@ -109,11 +119,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public UsersDTO addExecutorForTask(String username, Integer idTask, String usernameExecutor) {
         Task task = checkTasksAuthor(username, idTask, false);
-        User user = usersRepository.findByUsername(usernameExecutor).orElseThrow(() ->
-                new UserNotFoundException("пользователь не найден"));
+        User user = userService.findUserByUserName(usernameExecutor);
         task.setExecutor(user);
         Task resultTask = taskRepository.save(task);
-        return UsersDTO.fromUser(resultTask.getExecutor());
+//        return UsersDTO.fromUser(resultTask.getExecutor());
+        return usersMapper.toDTO(resultTask.getExecutor());
     }
 
     /**
@@ -121,13 +131,13 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public List<TaskDTO> getAllTaskToOtherAuthors(String usernameAuthor, Integer page) {
-        User user = usersRepository.findByUsername(usernameAuthor).orElseThrow(() ->
-                new UserNotFoundException("пользователь с таким логином не найден"));
-        List<Task> taskList = taskRepository.findAllByAuthor(user.getId(), PageRequest.of(page, 10)).stream().toList();
+        User user = userService.findUserByUserName(usernameAuthor);
+        List<Task> taskList = taskRepository.findByAuthor(user, PageRequest.of(page, 10)).stream().collect(Collectors.toList());
         if (!taskList.isEmpty()) {
-            return taskList.stream()
-                    .map(TaskDTO::fromTask)
-                    .collect(Collectors.toList());
+//            return taskList.stream()
+//                    .map(TaskDTO::fromTask)
+//                    .collect(Collectors.toList());
+            return taskMapper.toTaskDTOList(taskList);
         } else {
             return new ArrayList<>();
         }
@@ -138,15 +148,15 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public List<TaskDTO> getAllTaskForExecutor(String username, Integer page) {
-        User user = usersRepository.findByUsername(username).orElseThrow(() ->
-                new UserNotFoundException("пользователь с таким логином не найден"));
-        List<Task> taskList = taskRepository.findAllByExecutor(user.getId(), PageRequest.of(page, 10)).stream().toList();
+        User user = userService.findUserByUserName(username);
+        List<Task> taskList = taskRepository.findByExecutor(user, PageRequest.of(page, 10)).stream().collect(Collectors.toList());
         if (taskList.isEmpty()) {
             return new ArrayList<>();
         } else {
-            return taskList.stream()
-                    .map(TaskDTO::fromTask)
-                    .collect(Collectors.toList());
+//            return taskList.stream()
+//                    .map(TaskDTO::fromTask)
+//                    .collect(Collectors.toList());
+            return taskMapper.toTaskDTOList(taskList);
         }
     }
 
@@ -155,11 +165,17 @@ public class TaskServiceImpl implements TaskService {
      */
     @Override
     public List<TaskDTO> getAllTask(Integer page) {
-        List<Task> taskList = taskRepository.findAll(PageRequest.of(page, 10)).stream().toList();
+        List<Task> taskList = taskRepository.findAll(PageRequest.of(page, 10)).stream().collect(Collectors.toList());
         if (taskList.isEmpty()) {
             return new ArrayList<>();
         } else {
-            return taskList.stream().map(TaskDTO::fromTask).collect(Collectors.toList());
+//            return taskList.stream().map(TaskDTO::fromTask).collect(Collectors.toList());
+            return taskMapper.toTaskDTOList(taskList);
         }
+    }
+
+    @Override
+    public Task getTask(Integer id) {
+        return taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("задача не найдена"));
     }
 }
