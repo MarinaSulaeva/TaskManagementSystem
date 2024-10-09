@@ -2,6 +2,7 @@ package com.testtask.TaskManagementSystem.service;
 
 import com.testtask.TaskManagementSystem.DTO.CommentDTO;
 import com.testtask.TaskManagementSystem.DTO.CreateOrUpdateComment;
+import com.testtask.TaskManagementSystem.entity.Comment;
 
 import java.util.List;
 
@@ -20,6 +21,8 @@ public interface CommentService {
     List<CommentDTO> getAllCommentsForTask(Integer idTask, Integer page);
 
     List<CommentDTO> getAllCommentsForAuthor(String username, Integer page);
+
+    Comment findComment(Integer id);
 
 
 }

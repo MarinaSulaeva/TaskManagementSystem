@@ -13,6 +13,7 @@ import com.testtask.TaskManagementSystem.repository.TaskRepository;
 import com.testtask.TaskManagementSystem.repository.UsersRepository;
 import com.testtask.TaskManagementSystem.service.UserService;
 import net.minidev.json.JSONObject;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -60,7 +61,7 @@ public class CommentControllerIntegrationTest {
     @Container
     private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest")
             .withUsername("postgres")
-            .withPassword("73aberiv");
+            .withPassword("postgres");
 
     @DynamicPropertySource
     static void postgresProperties(DynamicPropertyRegistry registry) {
@@ -69,10 +70,14 @@ public class CommentControllerIntegrationTest {
         registry.add("spring.datasource.password", postgres::getPassword);
     }
 
-    private Task addToDb(String usernameExecutor) {
+    @BeforeEach
+    public void clearDb() {
         commentRepository.deleteAll();
         taskRepository.deleteAll();
         usersRepository.deleteAll();
+    }
+
+    private Task addToDb(String usernameExecutor) {
         User user = usersRepository.save(new User("user@gmail.com",
                 "$2a$10$DIbqqLodN24iFcXG2YNqvOyz4LcBKhFPF9viA3RzDea09YBHCBlse",
                 Role.USER));
@@ -96,7 +101,7 @@ public class CommentControllerIntegrationTest {
 
     private String getToken(String username) {
         UserDetails userDetails = userService.loadUserByUsername(username);
-        return jwtTokenUtil.generateToken(userDetails);
+        return jwtTokenUtil.createAccessToken(userDetails);
     }
 
     @Test
@@ -109,7 +114,7 @@ public class CommentControllerIntegrationTest {
                         .header("Authorization", "Bearer " + getToken("user@gmail.com"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newComment.toString()))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -193,7 +198,7 @@ public class CommentControllerIntegrationTest {
         Comment comment = addComment();
         mockMvc.perform(delete("/task/{id}/comment/{commentId}", comment.getTask().getId(), comment.getId())
                         .header("Authorization", "Bearer " + getToken("user@gmail.com")))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test

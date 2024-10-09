@@ -1,7 +1,6 @@
 package com.testtask.TaskManagementSystem.service;
 
-import com.testtask.TaskManagementSystem.DTO.JwtRequest;
-import com.testtask.TaskManagementSystem.DTO.Register;
+import com.testtask.TaskManagementSystem.DTO.*;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -9,7 +8,10 @@ import org.springframework.http.ResponseEntity;
  */
 public interface AuthService {
 
-    ResponseEntity<?> createToken(JwtRequest jwtRequest);
+    JwtResponse createToken(JwtRequest jwtRequest);
 
     boolean register(Register register);
+
+    JwtRefreshResponse refreshToken(JwtRefreshToken jwtRefreshToken);
+
 }

@@ -14,15 +14,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Integer> {
 
-//    @Query(value = "SELECT * FROM task " +
-//            "WHERE author_id = :userId", nativeQuery = true)
-//    Page<Task> findAllByAuthor(Integer userId, PageRequest pageable);
-//
-//    @Query(value = "SELECT * FROM task " +
-//            "WHERE executor_id = :userId", nativeQuery = true)
-//    Page<Task> findAllByExecutor(Integer userId, PageRequest pageable);
-
-
     Page<Task> findByAuthor(User user, PageRequest pageable);
 
 
