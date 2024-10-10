@@ -24,7 +24,7 @@ jobs:
       - name: Connect to PostgreSQL
         uses: harmon758/postgresql-action@v1
         with:
-          postgresql version: '11'
+          postgresql version: '17'
           postgresql db: 'task_managment'
           postgresql user: 'task_managment_user'
           postgresql password: 'task_managment_password'
