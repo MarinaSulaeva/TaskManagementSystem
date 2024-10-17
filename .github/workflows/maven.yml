@@ -43,5 +43,5 @@ jobs:
         with:
           name: backend
 
-      - name: deploy
-        run: docker compose up
+      - name: docker compose up
+        run: docker compose up -d
