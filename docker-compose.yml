@@ -1,18 +1,28 @@
-version: '3'
 services:
-  postgres:
-    image: postgres:latest
-    container_name: "postgres"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 73aberiv
-      POSTGRES_DB: test_task
-
   app:
-    build: ./
-    container_name: "java-app"
+    build:
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/task_managment
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_PROFILES_ACTIVE: docker
 
+  db:
+    image: postgres:15.6
+    environment:
+      POSTGRES_DB: task_managment
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
 
-
+  liquibase:
+    image: liquibase/liquibase
+    volumes:
+      - ./src/main/resources/liquibase/changelog:/liquibase/changelog
+    entrypoint: ["liquibase", "--changeLogFile=changelog-master.yml", "update"]

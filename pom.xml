@@ -130,7 +130,6 @@
 				<version>3.8.1</version>
 				<configuration>
 					<annotationProcessorPaths>
-						<!-- Сначала подключаем Lombok для первичной обработки кода -->
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
