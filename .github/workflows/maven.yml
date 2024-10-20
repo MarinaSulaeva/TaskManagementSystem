@@ -1,4 +1,4 @@
-name: Tests and Deploy
+name: Tests and Start
 
 on:
   push:
@@ -26,23 +26,26 @@ jobs:
       - name: All the Tests and Coverage check
         run: mvn clean install
 
-      - name: Rename the artifact
-        run: cp target/TaskManagementSystem-0.0.1-SNAPSHOT.jar backend.jar
-
-      - name: Save the artifact
-        uses: actions/upload-artifact@master
-        with:
-          name: backend
-          path: backend.jar
-
-  deploy:
-    runs-on: self-hosted
-    needs: run-all-tests
-    steps:
-      - name: Get the artifact
-        uses: actions/download-artifact@master
-        with:
-          name: backend
-
       - name: docker compose up
         run: docker compose up -d
+
+#      - name: Rename the artifact
+#        run: cp target/TaskManagementSystem-0.0.1-SNAPSHOT.jar backend.jar
+#
+#      - name: Save the artifact
+#        uses: actions/upload-artifact@master
+#        with:
+#          name: backend
+#          path: backend.jar
+
+#  deploy:
+#    runs-on: self-hosted
+#    needs: run-all-tests
+#    steps:
+#      - name: Get the artifact
+#        uses: actions/download-artifact@master
+#        with:
+#          name: backend
+#
+#      - name: docker compose up
+#        run: docker compose up -d
