@@ -146,7 +146,24 @@
 					<target>17</target>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>2.2.0.RELEASE</version>
+				<executions>
+					<execution>
+						<id>repackage</id>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+						<configuration>
+							<classifier>task</classifier>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+		<finalName>task_managment</finalName>
 	</build>
 
 </project>
