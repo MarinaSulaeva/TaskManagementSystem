@@ -1,3 +1,3 @@
 FROM openjdk:17
-ADD /target/task_managment.jar task_managment.jar
+ADD /target/TaskManagementSystem-0.0.1-SNAPSHOT.jar task_managment.jar
 ENTRYPOINT ["java", "-jar", "task_managment.jar"]

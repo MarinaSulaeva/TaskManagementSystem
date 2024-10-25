@@ -163,7 +163,6 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<finalName>task_managment</finalName>
 	</build>
 
 </project>
