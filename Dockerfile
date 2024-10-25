@@ -1,4 +1,3 @@
 FROM openjdk:17
-ADD /target/TaskManagementSystem-0.0.1-SNAPSHOT.jar backend.jar
-#ADD backend.jar backend.jar
-ENTRYPOINT ["java", "-jar", "backend.jar"]
+ADD /target/task_managment.jar task_managment.jar
+ENTRYPOINT ["java", "-jar", "task_managment.jar"]
