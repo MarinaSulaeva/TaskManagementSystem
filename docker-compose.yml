@@ -1,5 +1,6 @@
 services:
   app:
+    image: sulaevamv/task_managment:latest
     build:
       dockerfile: Dockerfile
     ports:
